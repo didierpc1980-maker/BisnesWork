@@ -199,16 +199,40 @@
         box-shadow: 0 8px 20px -8px rgba(79, 70, 229, 0.7);
       }
 
-      .issuer > div input {
+      .issuer > div {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .issuer > div label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
         width: 100%;
-        box-sizing: border-box;
+      }
+
+      .issuer > div span {
+        flex-shrink: 0;
+        font-size: 11px;
+        color: var(--muted);
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .issuer > div input {
+        flex: 1;
+        min-width: 140px;
+        max-width: 340px;
         font-size: 13px;
         padding: 4px 8px;
         border: 1px solid var(--line);
         border-radius: 6px;
         background: var(--surface);
         color: var(--ink);
-        min-width: 110px;
       }
 
       .issuer > div input:focus {
