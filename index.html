@@ -1,0 +1,1767 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>INV-DDS-PRO · Factura</title>
+    <meta
+      name="description"
+      content="Editor y vista previa de facturas de INV-DDS-PRO."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%234f46e5'/%3E%3Ctext x='50' y='68' font-size='50' font-family='Arial' font-weight='bold' text-anchor='middle' fill='white'%3EI%3C/text%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        --ink: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --accent: #4f46e5;
+        --accent-soft: #eef2ff;
+        --surface: #ffffff;
+        --bg: #eef2f7;
+        --radius: 18px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--ink);
+        background:
+          radial-gradient(1200px 600px at 10% -10%, #dbeafe 0%, transparent 60%),
+          radial-gradient(900px 500px at 110% 10%, #e0e7ff 0%, transparent 55%),
+          var(--bg);
+        font-family:
+          ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .file-protocol-warning {
+        position: fixed;
+        inset: 16px 16px auto;
+        z-index: 100;
+        display: grid;
+        gap: 4px;
+        max-width: 620px;
+        padding: 14px 16px;
+        border: 1px solid #fbbf24;
+        border-radius: 12px;
+        background: #fffbeb;
+        color: #78350f;
+        box-shadow: 0 12px 28px -18px rgba(120, 53, 15, 0.45);
+        font-size: 13px;
+      }
+
+      .file-protocol-warning code {
+        width: max-content;
+        padding: 2px 5px;
+        border-radius: 4px;
+        background: #fef3c7;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .app-bar {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 28px 24px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .brand {
+        font-size: 18px;
+        font-weight: 750;
+        letter-spacing: -0.02em;
+      }
+
+      .brand span {
+        margin-left: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+      }
+
+      .validation {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+        font-size: 12px;
+        font-weight: 600;
+        color: #047857;
+        white-space: nowrap;
+      }
+
+      .validation::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+      }
+
+      .validation[data-state="checking"] {
+        color: var(--muted);
+      }
+
+      .validation[data-state="invalid"] {
+        color: #b91c1c;
+      }
+
+      .validation[data-state="invalid"]::before {
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .btn {
+        appearance: none;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--ink);
+        padding: 10px 16px;
+        border-radius: 10px;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.15s ease,
+          border-color 0.15s ease,
+          transform 0.15s ease;
+      }
+
+      .btn:hover {
+        background: #fff;
+        border-color: #cbd5e1;
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .btn.primary {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: #fff;
+      }
+
+      .btn.primary:hover {
+        background: #1e293b;
+        border-color: #1e293b;
+      }
+
+      .page {
+        max-width: 1020px;
+        margin: 0 auto;
+        padding: 20px 24px 56px;
+      }
+
+      .invoice {
+        background: var(--surface);
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: var(--radius);
+        box-shadow:
+          0 30px 70px -40px rgba(15, 23, 42, 0.45),
+          0 2px 6px rgba(15, 23, 42, 0.04);
+        padding: 44px;
+      }
+
+      .invoice-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 32px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .issuer {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .logo {
+        width: 52px;
+        height: 52px;
+        border-radius: 15px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        background: linear-gradient(135deg, #6366f1, #4338ca);
+        box-shadow: 0 8px 20px -8px rgba(79, 70, 229, 0.7);
+      }
+
+      .issuer h1 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: -0.02em;
+      }
+
+      .issuer p {
+        margin: 4px 0 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .meta {
+        display: grid;
+        gap: 8px;
+        justify-items: end;
+        align-content: start;
+      }
+
+      .meta h2 {
+        margin: 0 0 4px;
+        font-size: 13px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .meta label {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .status-hint {
+        max-width: 205px;
+        margin: -2px 0 2px;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1.35;
+        text-align: right;
+      }
+
+      .meta input,
+      .meta select {
+        max-width: 160px;
+        text-align: right;
+        font-weight: 650;
+        color: var(--ink);
+      }
+
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        padding: 5px 7px;
+        transition:
+          border-color 0.15s ease,
+          background 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      input:hover,
+      select:hover,
+      textarea:hover {
+        border-color: var(--line);
+      }
+
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible {
+        outline: none;
+        border-color: #a5b4fc;
+        background: #f8faff;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      }
+
+      #status {
+        appearance: none;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #f8fafc;
+        color: #475569;
+        padding: 5px 12px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.09em;
+        text-align: center;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+
+      #status[data-status="issued"] {
+        color: #1d4ed8;
+        background: #eff6ff;
+        border-color: #bfdbfe;
+      }
+
+      #status[data-status="partially_paid"] {
+        color: #b45309;
+        background: #fffbeb;
+        border-color: #fde68a;
+      }
+
+      #status[data-status="paid"] {
+        color: #047857;
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+      }
+
+      #status[data-status="overdue"] {
+        color: #b91c1c;
+        background: #fef2f2;
+        border-color: #fecaca;
+      }
+
+      #status[data-status="cancelled"] {
+        color: #9f1239;
+        background: #fff1f2;
+        border-color: #fecdd3;
+        text-decoration: line-through;
+      }
+
+      .parties {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 40px;
+        padding: 30px 0;
+      }
+
+      .party h3,
+      .dates h3 {
+        margin: 0 0 10px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .party input {
+        display: block;
+        width: 100%;
+        max-width: 380px;
+      }
+
+      .party .customer-name {
+        font-size: 17px;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+      }
+
+      .party input:not(.customer-name) {
+        font-size: 13px;
+        color: #475569;
+      }
+
+      .dates {
+        display: grid;
+        gap: 8px;
+        align-content: start;
+      }
+
+      .dates label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .dates input {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .add-line-row {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 12px;
+      }
+
+      table {
+        width: calc(100% - 1px);
+        min-width: 620px;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+
+      th:nth-child(2) {
+        width: 70px;
+      }
+
+      th:nth-child(3) {
+        width: 84px;
+      }
+
+      th:nth-child(4) {
+        width: 68px;
+      }
+
+      th:nth-child(5) {
+        width: 64px;
+      }
+
+      th:nth-child(6) {
+        width: 108px;
+      }
+
+      th:nth-child(7) {
+        width: 32px;
+      }
+
+      th {
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      th.num,
+      td.num {
+        text-align: right;
+      }
+
+      tbody td {
+        padding: 5px 6px;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      tbody tr:hover td {
+        background: #fbfdff;
+      }
+
+      td textarea[data-field="description"] {
+        display: block;
+        width: 100%;
+        min-width: 150px;
+        min-height: 32px;
+        padding: 5px 7px;
+        border-radius: 6px;
+        font-size: 13px;
+        line-height: 1.45;
+        overflow: hidden;
+        resize: none;
+      }
+
+      td input[type="number"] {
+        width: 100%;
+        text-align: right;
+        font-size: 13px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .line-total {
+        display: inline-block;
+        min-width: 76px;
+        font-size: 13px;
+        font-weight: 650;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+
+      .remove {
+        border: 0;
+        background: none;
+        color: #cbd5e1;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+      }
+
+      .remove:hover {
+        color: #dc2626;
+        background: #fef2f2;
+      }
+
+      .totals {
+        width: min(360px, 100%);
+        margin: 28px 0 0 auto;
+        display: grid;
+        gap: 8px;
+      }
+
+      .totals > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .totals strong {
+        color: var(--ink);
+        font-weight: 650;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .totals .grand {
+        margin-top: 8px;
+        padding-top: 14px;
+        border-top: 2px solid var(--ink);
+        align-items: baseline;
+        color: var(--ink);
+      }
+
+      .totals .grand span {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .totals .grand strong {
+        font-size: 24px;
+        letter-spacing: -0.02em;
+      }
+
+      .notes {
+        margin-top: 34px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+      }
+
+      .notes label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .notes textarea {
+        width: 100%;
+        min-height: 64px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #f8fafc;
+        font-size: 13px;
+        line-height: 1.6;
+        resize: vertical;
+      }
+
+      .invoice-foot {
+        margin-top: 34px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .signature {
+        width: min(245px, 100%);
+        margin: 38px 0 0 auto;
+        padding-top: 42px;
+        border-top: 1px solid var(--ink);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .noscript {
+        max-width: 1020px;
+        margin: 0 auto 24px;
+        padding: 0 24px;
+        color: #b91c1c;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0.55;
+        cursor: pointer;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      .app-bar .btn {
+        padding: 9px 12px;
+      }
+
+      .btn.ghost {
+        background: transparent;
+        border-color: transparent;
+        color: var(--muted);
+      }
+
+      .btn.ghost:hover {
+        background: #fff;
+        border-color: var(--line);
+        color: var(--ink);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      /* Acceso */
+      .auth-screen {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .auth-card {
+        width: min(420px, 100%);
+        padding: 32px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow:
+          0 30px 70px -40px rgba(15, 23, 42, 0.45),
+          0 2px 6px rgba(15, 23, 42, 0.04);
+      }
+
+      .auth-brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 26px;
+      }
+
+      .auth-brand .logo {
+        width: 46px;
+        height: 46px;
+        border-radius: 13px;
+        font-size: 13px;
+      }
+
+      .auth-brand h1 {
+        margin: 0;
+        font-size: 18px;
+        letter-spacing: -0.02em;
+      }
+
+      .auth-brand p {
+        margin: 2px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .auth-tabs {
+        display: flex;
+        gap: 4px;
+        padding: 4px;
+        margin-bottom: 20px;
+        background: #f1f5f9;
+        border-radius: 10px;
+      }
+
+      .auth-tabs button {
+        flex: 1;
+        padding: 8px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .auth-tabs button[aria-selected="true"] {
+        background: #fff;
+        color: var(--ink);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);
+      }
+
+      .auth-form {
+        display: grid;
+        gap: 14px;
+      }
+
+      .auth-form label {
+        display: grid;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .auth-form input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-size: 14px;
+      }
+
+      .auth-form input:focus {
+        outline: 3px solid var(--accent-soft);
+        border-color: var(--accent);
+      }
+
+      .auth-error {
+        margin: 0;
+        padding: 10px 12px;
+        border-radius: 9px;
+        background: #fef2f2;
+        color: #b91c1c;
+        font-size: 12px;
+      }
+
+      .auth-submit {
+        width: 100%;
+      }
+
+      .auth-hint {
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: 11px;
+        text-align: center;
+      }
+
+      /* Listado de facturas */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        background: rgba(15, 23, 42, 0.45);
+        backdrop-filter: blur(3px);
+      }
+
+      .modal {
+        width: min(680px, 100%);
+        max-height: min(80vh, 720px);
+        display: flex;
+        flex-direction: column;
+        background: var(--surface);
+        border-radius: var(--radius);
+        box-shadow: 0 40px 90px -30px rgba(15, 23, 42, 0.55);
+        overflow: hidden;
+      }
+
+      .modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .modal-head h2 {
+        margin: 0;
+        font-size: 17px;
+      }
+
+      .icon-btn {
+        padding: 2px 8px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--muted);
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .icon-btn:hover {
+        background: #f1f5f9;
+        color: var(--ink);
+      }
+
+      .modal-body {
+        padding: 12px;
+        overflow-y: auto;
+      }
+
+      .empty-state {
+        padding: 36px 20px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .invoice-list {
+        display: grid;
+        gap: 8px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .invoice-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+
+      .invoice-open {
+        flex: 1;
+        min-width: 0;
+        display: grid;
+        gap: 4px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .invoice-open strong {
+        font-size: 13px;
+      }
+
+      .invoice-open span {
+        overflow: hidden;
+        color: var(--muted);
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .invoice-badge {
+        width: max-content;
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .invoice-amount {
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .invoice-delete {
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: #b91c1c;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .invoice-delete:hover {
+        background: #fef2f2;
+        border-color: #fecaca;
+      }
+
+      .statistics-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .statistics-card {
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #f8fafc;
+      }
+
+      .statistics-card h3 {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .statistics-card strong {
+        display: block;
+        margin-top: 10px;
+        color: var(--ink);
+        font-size: 20px;
+        letter-spacing: -0.03em;
+      }
+
+      .statistics-card span {
+        display: block;
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .statistics-note {
+        margin: 18px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 28px;
+        z-index: 60;
+        max-width: min(520px, calc(100vw - 32px));
+        padding: 12px 18px;
+        border-radius: 10px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 20px 50px -20px rgba(15, 23, 42, 0.6);
+        transform: translateX(-50%);
+      }
+
+      .toast[data-kind="error"] {
+        background: #b91c1c;
+      }
+
+      /* Idioma y ajustes */
+      .auth-language {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 8px;
+      }
+
+      .language-switch {
+        display: inline-flex;
+        gap: 2px;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #f1f5f9;
+      }
+
+      .language-switch button {
+        padding: 4px 11px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+      }
+
+      .language-switch button[aria-pressed="true"] {
+        background: #fff;
+        color: var(--ink);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+      }
+
+      .modal.modal-small {
+        width: min(440px, 100%);
+      }
+
+      .settings-body {
+        padding: 20px 24px 24px;
+      }
+
+      .settings-group {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+
+      .settings-group legend {
+        padding: 0;
+        margin-bottom: 4px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .settings-hint {
+        margin: 0 0 8px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .settings-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 13px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .settings-option:has(input:checked) {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .settings-option input {
+        accent-color: var(--accent);
+      }
+
+      @media (max-width: 720px) {
+        .app-bar {
+          padding: 20px 16px 0;
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .validation {
+          margin-left: 0;
+        }
+
+        .app-bar .actions {
+          width: 100%;
+        }
+
+        .auth-card {
+          padding: 24px;
+        }
+
+        .modal {
+          max-height: 88vh;
+        }
+
+        .modal-head {
+          padding: 16px 18px;
+        }
+
+        .invoice-row {
+          flex-wrap: wrap;
+        }
+
+        .statistics-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .invoice-open {
+          flex-basis: 100%;
+        }
+
+        .page {
+          padding: 16px 12px 40px;
+        }
+
+        .invoice {
+          padding: 24px 18px;
+          border-radius: 14px;
+        }
+
+        .invoice-head {
+          flex-direction: column;
+          gap: 22px;
+        }
+
+        .meta {
+          justify-items: start;
+        }
+
+        .meta label {
+          justify-content: flex-start;
+        }
+
+        .meta input,
+        .meta select {
+          text-align: left;
+        }
+
+        .parties {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+
+        .dates {
+          max-width: 320px;
+        }
+
+        .totals {
+          width: 100%;
+        }
+
+        .invoice-foot {
+          flex-direction: column;
+          gap: 6px;
+        }
+      }
+
+      @media print {
+        @page {
+          size: A4;
+          margin: 14mm;
+        }
+
+        * {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        body {
+          background: #fff;
+        }
+
+        .no-print,
+        .app-bar,
+        .noscript {
+          display: none !important;
+        }
+
+        .page {
+          max-width: none;
+          padding: 0;
+        }
+
+        .invoice {
+          border: 0;
+          border-radius: 0;
+          box-shadow: none;
+          padding: 0;
+        }
+
+        .table-wrap {
+          overflow: visible;
+        }
+
+        table {
+          min-width: 0;
+        }
+
+        input,
+        select,
+        textarea {
+          border-color: transparent !important;
+          background: transparent !important;
+          box-shadow: none !important;
+        }
+
+        .notes textarea {
+          border: 0;
+          padding: 0;
+          min-height: auto;
+        }
+
+        #status {
+          border: 0;
+          background: transparent !important;
+          padding-left: 0;
+          padding-right: 0;
+        }
+
+        #status[data-status="cancelled"] {
+          text-decoration: line-through;
+        }
+
+        tbody tr:hover td {
+          background: transparent;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          display: none;
+        }
+
+        .invoice-foot {
+          margin-top: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="file-protocol-warning" id="fileProtocolWarning" hidden>
+      <strong>INV-DDS-PRO necesita iniciarse desde el servidor.</strong>
+      <span>Cierra esta pestaña y ejecuta <code>INICIAR-APP.bat</code>.</span>
+    </div>
+    <section class="auth-screen" id="authScreen">
+      <div class="auth-card">
+        <div class="auth-language">
+          <div
+            class="language-switch"
+            role="group"
+            data-i18n-aria-label="settings.language"
+          >
+            <button
+              type="button"
+              data-language="es"
+              aria-pressed="true"
+              title="Español"
+            >
+              ES
+            </button>
+            <button
+              type="button"
+              data-language="en"
+              aria-pressed="false"
+              title="English"
+            >
+              EN
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-brand">
+          <div class="logo" aria-hidden="true">IDP</div>
+          <div>
+            <h1>INV-DDS-PRO</h1>
+            <p data-i18n="app.tagline">Facturación</p>
+          </div>
+        </div>
+
+        <div
+          class="auth-tabs"
+          role="tablist"
+          data-i18n-aria-label="auth.ariaLabel"
+        >
+          <button
+            type="button"
+            role="tab"
+            id="loginTab"
+            data-mode="login"
+            data-i18n="auth.loginTab"
+            aria-selected="true"
+          >
+            Entrar
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="registerTab"
+            data-mode="register"
+            data-i18n="auth.registerTab"
+            aria-selected="false"
+          >
+            Crear cuenta
+          </button>
+        </div>
+
+        <form class="auth-form" id="authForm" novalidate>
+          <label id="authNameField" hidden>
+            <span data-i18n="auth.name">Nombre</span>
+            <input
+              id="authName"
+              autocomplete="name"
+              maxlength="80"
+            />
+          </label>
+          <label>
+            <span data-i18n="auth.email">Correo</span>
+            <input
+              id="authEmail"
+              type="email"
+              autocomplete="email"
+              maxlength="200"
+              required
+            />
+          </label>
+          <label>
+            <span data-i18n="auth.password">Contraseña</span>
+            <input
+              id="authPassword"
+              type="password"
+              autocomplete="current-password"
+              minlength="8"
+              maxlength="200"
+              required
+            />
+          </label>
+          <p class="auth-error" id="authError" role="alert" hidden></p>
+          <button type="submit" class="btn primary auth-submit" id="authSubmit">
+            Entrar
+          </button>
+        </form>
+
+        <p class="auth-hint" data-i18n="auth.hint">
+          Cada cuenta solo puede ver y editar sus propias facturas.
+        </p>
+      </div>
+    </section>
+
+    <div id="appShell" hidden>
+      <header class="app-bar no-print">
+        <div class="brand">
+          INV-DDS-PRO<span data-i18n="app.tagline">Facturación</span>
+        </div>
+        <div
+          class="validation"
+          id="validationStatus"
+          data-state="checking"
+          data-i18n="validation.checking"
+          role="status"
+          aria-live="polite"
+        >
+          Comprobando…
+        </div>
+        <div class="actions">
+          <button
+            type="button"
+            class="btn"
+            id="newInvoiceBtn"
+            data-i18n="topbar.new"
+          >
+            Nueva
+          </button>
+          <button
+            type="button"
+            class="btn"
+            id="invoicesBtn"
+            data-i18n="topbar.invoices"
+          >
+            Mis facturas
+          </button>
+          <button
+            type="button"
+            class="btn"
+            id="statisticsBtn"
+            data-i18n="topbar.statistics"
+          >
+            Estadísticas
+          </button>
+          <button
+            type="button"
+            class="btn primary"
+            id="saveBtn"
+            data-i18n="topbar.save"
+          >
+            Guardar
+          </button>
+          <button
+            type="button"
+            class="btn"
+            id="addItem"
+            data-i18n="topbar.addItem"
+          >
+            + Línea
+          </button>
+          <button
+            type="button"
+            class="btn"
+            id="printBtn"
+            data-i18n="topbar.print"
+          >
+            Imprimir
+          </button>
+          <button
+            type="button"
+            class="btn"
+            id="downloadPdfBtn"
+            data-i18n="topbar.downloadPdf"
+          >
+            Descargar PDF
+          </button>
+          <button
+            type="button"
+            class="btn ghost"
+            id="settingsBtn"
+            data-i18n="topbar.settings"
+          >
+            Ajustes
+          </button>
+          <button
+            type="button"
+            class="btn ghost"
+            id="logoutBtn"
+            data-i18n="topbar.logout"
+          >
+            Salir
+          </button>
+        </div>
+      </header>
+
+    <main class="page">
+      <article
+        class="invoice"
+        data-i18n-aria-label="invoice.ariaLabel"
+        aria-label="Factura"
+      >
+        <div class="invoice-head">
+          <div class="issuer">
+            <div class="logo" aria-hidden="true">IDP</div>
+            <div>
+              <h1>INV-DDS-PRO</h1>
+            </div>
+          </div>
+
+          <div class="meta">
+            <h2 data-i18n="invoice.title">Factura</h2>
+            <label>
+              <span data-i18n="invoice.number">N.º</span>
+              <input
+                id="invoiceNumber"
+                placeholder="FAC-2026-0001"
+                data-i18n-aria-label="invoice.numberAria"
+                aria-label="Número de factura"
+                autocomplete="off"
+              />
+            </label>
+            <label>
+              <span data-i18n="invoice.status">Estado</span>
+              <select
+                id="status"
+                data-status="issued"
+                data-i18n-aria-label="invoice.statusAria"
+                aria-label="Estado de la factura"
+              >
+                <option value="issued" selected data-i18n="status.issued">
+                  Emitida
+                </option>
+                <option value="paid" data-i18n="status.paid">Pagada</option>
+                <option value="overdue" data-i18n="status.overdue">
+                  Vencida
+                </option>
+              <option value="cancelled" data-i18n="status.cancelled">
+                  Anulada
+                </option>
+              </select>
+            </label>
+
+            <label>
+              <span data-i18n="invoice.currency">Moneda</span>
+              <input
+                id="currency"
+                value="USD"
+                maxlength="3"
+                data-i18n-aria-label="invoice.currencyAria"
+                aria-label="Moneda ISO 4217"
+                autocomplete="off"
+              />
+            </label>
+          </div>
+        </div>
+
+        <div class="parties">
+          <section class="party">
+            <h3 data-i18n="invoice.billedTo">Facturado a</h3>
+            <input
+              id="customerName"
+              class="customer-name"
+              placeholder="Nombre del cliente"
+              data-i18n-placeholder="invoice.customerName"
+              data-i18n-aria-label="invoice.customerName"
+              aria-label="Nombre del cliente"
+              autocomplete="organization"
+            />
+            <input
+              id="customerTaxId"
+              placeholder="Identificación fiscal"
+              data-i18n-placeholder="invoice.customerTaxId"
+              data-i18n-aria-label="invoice.customerTaxId"
+              aria-label="Identificación fiscal"
+              autocomplete="off"
+            />
+            <input
+              id="customerEmail"
+              type="email"
+              placeholder="Correo del cliente"
+              data-i18n-placeholder="invoice.customerEmail"
+              data-i18n-aria-label="invoice.customerEmail"
+              aria-label="Correo del cliente"
+              autocomplete="email"
+            />
+            <input
+              id="customerAddress"
+              placeholder="Dirección del cliente"
+              data-i18n-placeholder="invoice.customerAddress"
+              data-i18n-aria-label="invoice.customerAddress"
+              aria-label="Dirección del cliente"
+              autocomplete="street-address"
+            />
+          </section>
+
+          <section class="dates">
+            <h3 data-i18n="invoice.dates">Fechas</h3>
+            <label>
+              <span data-i18n="invoice.issueDate">Emisión</span>
+              <input id="issueDate" type="date" />
+            </label>
+            <label>
+              <span data-i18n="invoice.dueDate">Vencimiento</span>
+              <input id="dueDate" type="date" />
+            </label>
+          </section>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col" data-i18n="table.description">Descripción</th>
+                <th scope="col" class="num" data-i18n="table.quantity">
+                  Cantidad
+                </th>
+                <th scope="col" class="num" data-i18n="table.unitPrice">
+                  Precio unit.
+                </th>
+                <th scope="col" class="num" data-i18n="table.discount">
+                  Desc. %
+                </th>
+                <th scope="col" class="num" data-i18n="table.tax">Imp. %</th>
+                <th scope="col" class="num" data-i18n="table.total">Total</th>
+                <th scope="col" class="no-print">
+                  <span class="sr-only" data-i18n="table.actions">
+                    Acciones
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="add-line-row no-print">
+          <button
+            type="button"
+            class="btn"
+            id="addItemBelow"
+            data-i18n="topbar.addItem"
+          >
+            + Añadir línea
+          </button>
+        </div>
+
+        <div class="totals" aria-live="polite">
+          <div>
+            <span data-i18n="totals.subtotal">Subtotal</span>
+            <strong id="subtotal">—</strong>
+          </div>
+          <div>
+            <span data-i18n="totals.discounts">Descuentos</span>
+            <strong id="discountTotal">—</strong>
+          </div>
+          <div>
+            <span data-i18n="totals.taxes">Impuestos</span>
+            <strong id="taxTotal">—</strong>
+          </div>
+          <div class="grand">
+            <span data-i18n="totals.total">Total</span>
+            <strong id="total">—</strong>
+          </div>
+        </div>
+
+        <section class="notes">
+          <label for="notes" data-i18n="notes.label">Notas</label>
+          <textarea id="notes" rows="3">Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectivo, cheque y tarjeta de crédito.</textarea>
+        </section>
+
+        <section class="signature" data-i18n="signature.authorized">
+          Firma autorizada
+        </section>
+
+        <footer class="invoice-foot">
+          <span data-i18n="app.brandFooter">INV-DDS-PRO · Facturación</span>
+          <span id="footNumber">—</span>
+        </footer>
+      </article>
+    </main>
+    </div>
+
+    <div class="modal-backdrop no-print" id="invoicesModal" hidden>
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="invoicesTitle"
+      >
+        <header class="modal-head">
+          <h2 id="invoicesTitle" data-i18n="invoices.title">Mis facturas</h2>
+          <button
+            type="button"
+            class="icon-btn"
+            id="closeInvoicesBtn"
+            data-i18n-aria-label="common.close"
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="modal-body">
+          <p class="empty-state" id="invoicesEmpty" hidden>
+            No tienes facturas guardadas todavía.
+          </p>
+          <ul class="invoice-list" id="invoicesList"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop no-print" id="settingsModal" hidden>
+      <div
+        class="modal modal-small"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settingsTitle"
+      >
+        <header class="modal-head">
+          <h2 id="settingsTitle" data-i18n="settings.title">Ajustes</h2>
+          <button
+            type="button"
+            class="icon-btn"
+            id="closeSettingsBtn"
+            data-i18n-aria-label="common.close"
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="modal-body settings-body">
+          <fieldset class="settings-group">
+            <legend data-i18n="settings.language">Idioma</legend>
+            <p class="settings-hint" data-i18n="settings.languageHint">
+              Elige el idioma de la interfaz y de los PDF.
+            </p>
+            <label class="settings-option">
+              <input type="radio" name="language" value="es" />
+              <span data-i18n="settings.spanish">Español</span>
+            </label>
+            <label class="settings-option">
+              <input type="radio" name="language" value="en" />
+              <span data-i18n="settings.english">Inglés</span>
+            </label>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop no-print" id="statisticsModal" hidden>
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="statisticsTitle"
+      >
+        <header class="modal-head">
+          <h2 id="statisticsTitle" data-i18n="statistics.title">
+            Control de ingresos
+          </h2>
+          <button
+            type="button"
+            class="icon-btn"
+            id="closeStatisticsBtn"
+            data-i18n-aria-label="common.close"
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="modal-body">
+          <p class="empty-state" id="statisticsLoading" data-i18n="statistics.loading">
+            Calculando ingresos…
+          </p>
+          <div class="statistics-grid" id="statisticsGrid" hidden>
+            <article class="statistics-card">
+              <h3 data-i18n="statistics.week">Esta semana</h3>
+              <strong id="statisticsWeekTotal">—</strong>
+              <span id="statisticsWeekCount"></span>
+            </article>
+            <article class="statistics-card">
+              <h3 data-i18n="statistics.month">Este mes</h3>
+              <strong id="statisticsMonthTotal">—</strong>
+              <span id="statisticsMonthCount"></span>
+            </article>
+            <article class="statistics-card">
+              <h3 data-i18n="statistics.year">Este año</h3>
+              <strong id="statisticsYearTotal">—</strong>
+              <span id="statisticsYearCount"></span>
+            </article>
+          </div>
+          <p class="statistics-note" data-i18n="statistics.note">
+            Solo se incluyen facturas marcadas como pagadas.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <noscript>
+      <p class="noscript" data-i18n="app.noscript">
+        Activa JavaScript para editar y calcular la factura.
+      </p>
+    </noscript>
+
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      if (window.location.protocol === "file:") {
+        document.getElementById("fileProtocolWarning").hidden = false;
+      }
+    </script>
+  </body>
+</html>
