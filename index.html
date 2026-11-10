@@ -208,6 +208,9 @@
         font-size: 12px;
         color: var(--muted);
         line-height: 1.4;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
       }
 
       .meta {
@@ -1056,7 +1059,7 @@
               <div class="logo" aria-hidden="true">IDP</div>
               <div>
                 <h1 id="issuerCompanyName">INV-DDS-PRO</h1>
-                <p id="issuerCompanyContact" class="issuer-contact"></p>
+                <div id="issuerCompanyContact" class="issuer-contact"></div>
               </div>
             </div>
 
@@ -2238,10 +2241,19 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
 
         if (nameEl) nameEl.textContent = currentCompany.name || "INV-DDS-PRO";
 
-        const contactParts = [];
-        if (currentCompany.email) contactParts.push(currentCompany.email);
-        if (currentCompany.phone) contactParts.push(currentCompany.phone);
-        if (contactEl) contactEl.textContent = contactParts.join("  |  ");
+        if (contactEl) {
+          contactEl.innerHTML = "";
+          if (currentCompany.email) {
+            const emailLine = document.createElement("div");
+            emailLine.textContent = currentCompany.email;
+            contactEl.appendChild(emailLine);
+          }
+          if (currentCompany.phone) {
+            const phoneLine = document.createElement("div");
+            phoneLine.textContent = currentCompany.phone;
+            contactEl.appendChild(phoneLine);
+          }
+        }
 
         if (headerEl) headerEl.textContent = currentCompany.name || "";
       }
