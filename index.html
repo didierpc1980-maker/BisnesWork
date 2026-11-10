@@ -197,20 +197,41 @@
         box-shadow: 0 8px 20px -8px rgba(79, 70, 229, 0.7);
       }
 
-      .issuer h1 {
+      .issuer > div {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .issuer > div label {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
         margin: 0;
-        font-size: 20px;
-        letter-spacing: -0.02em;
+      }
+
+      .issuer > div span {
+        font-size: 11px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .issuer > div input {
+        font-size: 14px;
+        padding: 4px 8px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--surface);
+        color: var(--ink);
+      }
+
+      .issuer > div input:focus {
+        outline: 2px solid var(--accent);
+        border-color: var(--accent);
       }
 
       .issuer-contact {
-        margin: 4px 0 0 0;
-        font-size: 12px;
-        color: var(--muted);
-        line-height: 1.4;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
+        display: none;
       }
 
       .meta {
@@ -1058,8 +1079,33 @@
             <div class="issuer">
               <div class="logo" aria-hidden="true">IDP</div>
               <div>
-                <h1 id="issuerCompanyName">INV-DDS-PRO</h1>
-                <div id="issuerCompanyContact" class="issuer-contact"></div>
+                <label>
+                  <span data-i18n="company.name">Nombre de la compañía</span>
+                  <input
+                    id="issuerCompanyName"
+                    type="text"
+                    maxlength="100"
+                    autocomplete="off"
+                  />
+                </label>
+                <label>
+                  <span data-i18n="company.email">Correo de la compañía</span>
+                  <input
+                    id="issuerCompanyEmail"
+                    type="email"
+                    maxlength="200"
+                    autocomplete="off"
+                  />
+                </label>
+                <label>
+                  <span data-i18n="company.phone">Teléfono de la compañía</span>
+                  <input
+                    id="issuerCompanyPhone"
+                    type="tel"
+                    maxlength="30"
+                    autocomplete="off"
+                  />
+                </label>
               </div>
             </div>
 
@@ -1867,6 +1913,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           number: document.getElementById("invoiceNumber").value.trim(),
           status: document.getElementById("status").value,
           currency: document.getElementById("currency").value.trim().toUpperCase() || "USD",
+          issuerName: document.getElementById("issuerCompanyName").value.trim() || currentCompany.name,
+          issuerEmail: document.getElementById("issuerCompanyEmail").value.trim() || currentCompany.email,
+          issuerPhone: document.getElementById("issuerCompanyPhone").value.trim() || currentCompany.phone,
           customer: {
             name: document.getElementById("customerName").value.trim(),
             taxId: document.getElementById("customerTaxId").value.trim(),
@@ -1968,6 +2017,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         due.setDate(due.getDate() + 30);
         document.getElementById("issueDate").value = dateInputValue(today);
         document.getElementById("dueDate").value = dateInputValue(due);
+        document.getElementById("issuerCompanyName").value = currentCompany.name;
+        document.getElementById("issuerCompanyEmail").value = currentCompany.email;
+        document.getElementById("issuerCompanyPhone").value = currentCompany.phone;
         document.getElementById("itemsBody").replaceChildren();
         const row = createRow();
         document.getElementById("itemsBody").append(row);
@@ -2014,6 +2066,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
             document.getElementById("customerEmail").value = inv.customer?.email || "";
             document.getElementById("customerPhone").value = inv.customer?.phone || "";
             document.getElementById("customerAddress").value = inv.customer?.address || "";
+            document.getElementById("issuerCompanyName").value = inv.issuerName || currentCompany.name;
+            document.getElementById("issuerCompanyEmail").value = inv.issuerEmail || currentCompany.email;
+            document.getElementById("issuerCompanyPhone").value = inv.issuerPhone || currentCompany.phone;
             document.getElementById("issueDate").value = inv.issueDate ? inv.issueDate.slice(0, 10) : "";
             document.getElementById("dueDate").value = inv.dueDate ? inv.dueDate.slice(0, 10) : "";
             document.getElementById("notes").value = inv.notes || "";
@@ -2053,13 +2108,16 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         const inv = buildInvoice();
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
+        const issuerName = inv.issuerName || currentCompany.name;
+        const issuerEmail = inv.issuerEmail || currentCompany.email;
+        const issuerPhone = inv.issuerPhone || currentCompany.phone;
         doc.setFontSize(16);
         doc.setFont("helvetica", "bold");
-        doc.text(currentCompany.name, 20, 15);
+        doc.text(issuerName, 20, 15);
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
-        doc.text(currentCompany.email, 20, 22);
-        doc.text(currentCompany.phone, 20, 28);
+        doc.text(issuerEmail, 20, 22);
+        doc.text(issuerPhone, 20, 28);
         doc.setFontSize(12);
         doc.text(t("pdf.invoice"), 20, 38);
         doc.text(t("pdf.invoice") + " " + inv.number, 20, 48);
