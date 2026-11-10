@@ -1016,7 +1016,7 @@
 
     <div id="appShell" hidden>
       <header class="app-bar no-print">
-        <div class="brand">INV-DDS-PRO<span id="appTagline">Facturación</span><span id="currentUserName"></span></div>
+        <div class="brand">INV-DDS-PRO<span id="appTagline">Facturación</span><span id="currentUserName"></span><span id="companyDisplayName"></span></div>
         <div
           class="validation"
           id="validationStatus"
@@ -1267,6 +1267,43 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
               <span data-i18n="settings.english">Inglés</span>
             </label>
           </fieldset>
+
+          <fieldset class="settings-group">
+            <legend data-i18n="company.settings">Datos de la compañía</legend>
+            <p class="settings-hint" data-i18n="company.settingsHint">
+              Estos datos aparecen en el encabezado de las facturas y PDF. Puedes editarlos en cualquier momento.
+            </p>
+            <label>
+              <span data-i18n="company.name">Nombre de la compañía</span>
+              <input
+                id="companyName"
+                type="text"
+                maxlength="100"
+                autocomplete="off"
+              />
+            </label>
+            <label>
+              <span data-i18n="company.email">Correo de la compañía</span>
+              <input
+                id="companyEmail"
+                type="email"
+                maxlength="200"
+                autocomplete="off"
+              />
+            </label>
+            <label>
+              <span data-i18n="company.phone">Teléfono de la compañía</span>
+              <input
+                id="companyPhone"
+                type="tel"
+                maxlength="30"
+                autocomplete="off"
+              />
+            </label>
+            <button type="button" class="btn primary" id="saveCompanyBtn" data-i18n="company.save">
+              Guardar datos de compañía
+            </button>
+          </fieldset>
         </div>
       </div>
     </div>
@@ -1328,6 +1365,25 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
       const USERS_KEY = "inv-dds-pro:users";
       const SESSION_KEY = "inv-dds-pro:session";
       const LANGUAGE_KEY = "inv-dds-pro:language";
+      const COMPANY_KEY = "inv-dds-pro:company";
+
+      const DEFAULT_COMPANY = {
+        name: "DDS PRO SERVICES LLC",
+        email: "ddsproservices@gmail.com",
+        phone: "(239) 821-2003",
+      };
+
+      function loadCompany() {
+        try {
+          const stored = JSON.parse(localStorage.getItem(COMPANY_KEY) || "null");
+          if (stored && stored.name) return stored;
+        } catch {}
+        return { ...DEFAULT_COMPANY };
+      }
+
+      function saveCompany(company) {
+        localStorage.setItem(COMPANY_KEY, JSON.stringify(company));
+      }
 
       async function hashPassword(password) {
         const encoder = new TextEncoder();
@@ -1525,6 +1581,12 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "settings.languageHint": "Elige el idioma de la interfaz y de los PDF.",
           "settings.spanish": "Español",
           "settings.english": "Inglés",
+          "company.name": "Nombre de la compañía",
+          "company.email": "Correo de la compañía",
+          "company.phone": "Teléfono de la compañía",
+          "company.settings": "Datos de la compañía",
+          "company.settingsHint": "Estos datos aparecen en el encabezado de las facturas y PDF. Puedes editarlos en cualquier momento.",
+          "company.save": "Guardar datos de compañía",
           "pdf.invoice": "FACTURA",
           "pdf.billedTo": "FACTURADO A",
           "pdf.issueDate": "EMISIÓN",
@@ -1613,6 +1675,12 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "settings.languageHint": "Choose the language for the interface and PDFs.",
           "settings.spanish": "Spanish",
           "settings.english": "English",
+          "company.name": "Company name",
+          "company.email": "Company email",
+          "company.phone": "Company phone",
+          "company.settings": "Company details",
+          "company.settingsHint": "These details appear on invoice headers and PDFs. You can edit them at any time.",
+          "company.save": "Save company details",
           "pdf.invoice": "INVOICE",
           "pdf.billedTo": "BILLED TO",
           "pdf.issueDate": "ISSUE DATE",
@@ -1974,19 +2042,25 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         const inv = buildInvoice();
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.setFontSize(20);
-        doc.text(t("pdf.invoice"), 20, 20);
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.text(currentCompany.name, 20, 15);
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(currentCompany.email, 20, 22);
+        doc.text(currentCompany.phone, 20, 28);
         doc.setFontSize(12);
-        doc.text(t("pdf.invoice") + " " + inv.number, 20, 30);
-        doc.text(t("pdf.billedTo") + ": " + inv.customer.name, 20, 40);
+        doc.text(t("pdf.invoice"), 20, 38);
+        doc.text(t("pdf.invoice") + " " + inv.number, 20, 48);
+        doc.text(t("pdf.billedTo") + ": " + inv.customer.name, 20, 58);
         if (inv.customer.phone) {
-          doc.text(t("invoice.customerPhone") + ": " + inv.customer.phone, 20, 48);
+          doc.text(t("invoice.customerPhone") + ": " + inv.customer.phone, 20, 66);
         }
-        doc.text(t("pdf.issueDate") + ": " + formatDate(inv.issueDate, currentLanguage), 20, 50);
-        doc.text(t("pdf.dueDate") + ": " + formatDate(inv.dueDate, currentLanguage), 20, 60);
-        doc.text(t("totals.total") + ": " + formatMoney(inv.total, inv.currency, currentLanguage), 20, 70);
+        doc.text(t("pdf.issueDate") + ": " + formatDate(inv.issueDate, currentLanguage), 20, 74);
+        doc.text(t("pdf.dueDate") + ": " + formatDate(inv.dueDate, currentLanguage), 20, 82);
+        doc.text(t("totals.total") + ": " + formatMoney(inv.total, inv.currency, currentLanguage), 20, 90);
         if (inv.notes) {
-          doc.text(t("pdf.notes") + ": " + inv.notes, 20, 80);
+          doc.text(t("pdf.notes") + ": " + inv.notes, 20, 98);
         }
         const pageCount = doc.getNumberOfPages();
         for (let i = 1; i <= pageCount; i += 1) {
@@ -2074,13 +2148,32 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         document.querySelectorAll('input[name="language"]').forEach((input) => {
           input.checked = input.value === currentLanguage;
         });
+        document.getElementById("companyName").value = currentCompany.name;
+        document.getElementById("companyEmail").value = currentCompany.email;
+        document.getElementById("companyPhone").value = currentCompany.phone;
       });
       document.getElementById("closeSettingsBtn").addEventListener("click", () => {
         document.getElementById("settingsModal").hidden = true;
       });
+      document.getElementById("saveCompanyBtn").addEventListener("click", () => {
+        currentCompany = {
+          name: document.getElementById("companyName").value.trim() || DEFAULT_COMPANY.name,
+          email: document.getElementById("companyEmail").value.trim() || DEFAULT_COMPANY.email,
+          phone: document.getElementById("companyPhone").value.trim() || DEFAULT_COMPANY.phone,
+        };
+        saveCompany(currentCompany);
+        document.getElementById("companyDisplayName").textContent = currentCompany.name;
+        document.getElementById("settingsModal").hidden = true;
+        const toast = document.getElementById("toast");
+        toast.textContent = t("company.save");
+        toast.hidden = false;
+        toast.setAttribute("data-kind", "success");
+        setTimeout(() => { toast.hidden = true; }, 3000);
+      });
 
       // Auth (persistente en localStorage)
       let currentUser = null;
+      let currentCompany = loadCompany();
 
       async function handleAuthSubmit(e) {
         e.preventDefault();
@@ -2134,6 +2227,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         document.getElementById("authScreen").hidden = true;
         document.getElementById("appShell").hidden = false;
         document.getElementById("currentUserName").textContent = currentUser ? currentUser.name : "";
+        document.getElementById("companyDisplayName").textContent = currentCompany.name;
         newInvoice();
       }
 
