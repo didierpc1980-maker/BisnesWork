@@ -1499,7 +1499,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         const user = {
           id: "user-" + Date.now() + "-" + Math.random().toString(36).slice(2),
           name,
-          email,
+          email: email.toLowerCase(),
           passwordHash: await hashPassword(password),
           createdAt: new Date().toISOString(),
         };
