@@ -206,13 +206,24 @@
         min-width: 0;
       }
 
-      .issuer > div label {
+      .issuer > div > label,
+      .issuer-row {
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 8px;
         margin: 0;
         width: 100%;
+      }
+
+      .issuer-row {
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .issuer-row label {
+        flex: 1;
+        min-width: 0;
       }
 
       .issuer > div span {
@@ -223,10 +234,11 @@
         white-space: nowrap;
       }
 
-      .issuer > div input {
+      .issuer > div input,
+      .issuer-row input {
         flex: 1;
-        min-width: 150px;
-        max-width: 400px;
+        min-width: 120px;
+        max-width: 300px;
         font-size: 13px;
         padding: 4px 8px;
         border: 1px solid var(--line);
@@ -238,7 +250,8 @@
         text-overflow: ellipsis;
       }
 
-      .issuer > div input:focus {
+      .issuer > div input:focus,
+      .issuer-row input:focus {
         outline: 2px solid var(--accent);
         border-color: var(--accent);
       }
@@ -1091,43 +1104,74 @@
           <div class="invoice-head">
             <div class="issuer">
               <div class="logo" aria-hidden="true">IDP</div>
-              <div>
-                <label>
-                  <span data-i18n="company.name">Nombre de la compañía</span>
-                  <input
-                    id="issuerCompanyName"
-                    type="text"
-                    maxlength="100"
-                    autocomplete="off"
-                  />
-                </label>
-                <label>
-                  <span data-i18n="company.email">Correo de la compañía</span>
-                  <input
-                    id="issuerCompanyEmail"
-                    type="email"
-                    maxlength="200"
-                    autocomplete="off"
-                  />
-                </label>
-                <label>
-                  <span data-i18n="company.phone">Teléfono de la compañía</span>
-                  <input
-                    id="issuerCompanyPhone"
-                    type="tel"
-                    maxlength="30"
-                    autocomplete="off"
-                  />
-                </label>
-                <label>
-                  <span data-i18n="company.address">Dirección de la compañía</span>
-                  <input
-                    id="issuerCompanyAddress"
-                    type="text"
-                    maxlength="200"
-                    autocomplete="off"
-                  />
-                </label>
+              <div class="issuer-fields">
+                <div class="issuer-row">
+                  <label>
+                    <span data-i18n="company.name">Nombre de la compañía</span>
+                    <input
+                      id="issuerCompanyName"
+                      type="text"
+                      maxlength="100"
+                      autocomplete="off"
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="company.email">Correo de la compañía</span>
+                    <input
+                      id="issuerCompanyEmail"
+                      type="email"
+                      maxlength="200"
+                      autocomplete="off"
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="company.phone">Teléfono de la compañía</span>
+                    <input
+                      id="issuerCompanyPhone"
+                      type="tel"
+                      maxlength="30"
+                      autocomplete="off"
+                    />
+                  </label>
+                </div>
+                <div class="issuer-row">
+                  <label>
+                    <span data-i18n="company.address">Dirección de la compañía</span>
+                    <input
+                      id="issuerCompanyAddress"
+                      type="text"
+                      maxlength="200"
+                      autocomplete="off"
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="company.city">Ciudad</span>
+                    <input
+                      id="issuerCompanyCity"
+                      type="text"
+                      maxlength="80"
+                      autocomplete="off"
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="company.state">Estado</span>
+                    <input
+                      id="issuerCompanyState"
+                      type="text"
+                      maxlength="40"
+                      autocomplete="off"
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="company.zipCode">Código postal</span>
+                    <input
+                      id="issuerCompanyZipCode"
+                      type="text"
+                      maxlength="20"
+                      autocomplete="off"
+                    />
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -1388,6 +1432,33 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
                 autocomplete="off"
               />
             </label>
+            <label>
+              <span data-i18n="company.city">Ciudad</span>
+              <input
+                id="companyCity"
+                type="text"
+                maxlength="80"
+                autocomplete="off"
+              />
+            </label>
+            <label>
+              <span data-i18n="company.state">Estado</span>
+              <input
+                id="companyState"
+                type="text"
+                maxlength="40"
+                autocomplete="off"
+              />
+            </label>
+            <label>
+              <span data-i18n="company.zipCode">Código postal</span>
+              <input
+                id="companyZipCode"
+                type="text"
+                maxlength="20"
+                autocomplete="off"
+              />
+            </label>
             <button type="button" class="btn primary" id="saveCompanyBtn" data-i18n="company.save">
               Guardar datos de compañía
             </button>
@@ -1460,6 +1531,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         email: "ddsproservices@gmail.com",
         phone: "(239) 821-2003",
         address: "",
+        city: "",
+        state: "",
+        zipCode: "",
       };
 
       function loadCompany() {
@@ -1471,6 +1545,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
               email: stored.email || DEFAULT_COMPANY.email,
               phone: stored.phone || DEFAULT_COMPANY.phone,
               address: stored.address || DEFAULT_COMPANY.address,
+              city: stored.city || DEFAULT_COMPANY.city,
+              state: stored.state || DEFAULT_COMPANY.state,
+              zipCode: stored.zipCode || DEFAULT_COMPANY.zipCode,
             };
           }
         } catch {}
@@ -1708,6 +1785,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "company.email": "Correo de la compañía",
           "company.phone": "Teléfono de la compañía",
           "company.address": "Dirección de la compañía",
+          "company.city": "Ciudad",
+          "company.state": "Estado",
+          "company.zipCode": "Código postal",
           "company.settings": "Datos de la compañía",
           "company.settingsHint": "Estos datos aparecen en el encabezado de las facturas y PDF. Puedes editarlos en cualquier momento.",
           "company.save": "Guardar datos de compañía",
@@ -1805,6 +1885,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "company.email": "Company email",
           "company.phone": "Company phone",
           "company.address": "Company address",
+          "company.city": "City",
+          "company.state": "State",
+          "company.zipCode": "ZIP code",
           "company.settings": "Company details",
           "company.settingsHint": "These details appear on invoice headers and PDFs. You can edit them at any time.",
           "company.save": "Save company details",
@@ -1983,10 +2066,13 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           number: document.getElementById("invoiceNumber").value.trim(),
           status: document.getElementById("status").value,
           currency: document.getElementById("currency").value.trim().toUpperCase() || "USD",
-          issuerName: currentCompany.name,
-          issuerEmail: currentCompany.email,
-          issuerPhone: currentCompany.phone,
-          issuerAddress: currentCompany.address,
+          issuerName: document.getElementById("issuerCompanyName").value.trim() || currentCompany.name,
+          issuerEmail: document.getElementById("issuerCompanyEmail").value.trim() || currentCompany.email,
+          issuerPhone: document.getElementById("issuerCompanyPhone").value.trim() || currentCompany.phone,
+          issuerAddress: document.getElementById("issuerCompanyAddress").value.trim() || currentCompany.address,
+          issuerCity: document.getElementById("issuerCompanyCity").value.trim() || currentCompany.city,
+          issuerState: document.getElementById("issuerCompanyState").value.trim() || currentCompany.state,
+          issuerZipCode: document.getElementById("issuerCompanyZipCode").value.trim() || currentCompany.zipCode,
           customer: {
             name: document.getElementById("customerName").value.trim(),
             taxId: document.getElementById("customerTaxId").value.trim(),
@@ -2092,6 +2178,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         document.getElementById("issuerCompanyEmail").value = currentCompany.email;
         document.getElementById("issuerCompanyPhone").value = currentCompany.phone;
         document.getElementById("issuerCompanyAddress").value = currentCompany.address;
+        document.getElementById("issuerCompanyCity").value = currentCompany.city;
+        document.getElementById("issuerCompanyState").value = currentCompany.state;
+        document.getElementById("issuerCompanyZipCode").value = currentCompany.zipCode;
         document.getElementById("itemsBody").replaceChildren();
         const row = createRow();
         document.getElementById("itemsBody").append(row);
@@ -2142,6 +2231,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
             document.getElementById("issuerCompanyEmail").value = inv.issuerEmail || currentCompany.email;
             document.getElementById("issuerCompanyPhone").value = inv.issuerPhone || currentCompany.phone;
             document.getElementById("issuerCompanyAddress").value = inv.issuerAddress || currentCompany.address;
+            document.getElementById("issuerCompanyCity").value = inv.issuerCity || currentCompany.city;
+            document.getElementById("issuerCompanyState").value = inv.issuerState || currentCompany.state;
+            document.getElementById("issuerCompanyZipCode").value = inv.issuerZipCode || currentCompany.zipCode;
             document.getElementById("issueDate").value = inv.issueDate ? inv.issueDate.slice(0, 10) : "";
             document.getElementById("dueDate").value = inv.dueDate ? inv.dueDate.slice(0, 10) : "";
             document.getElementById("notes").value = inv.notes || "";
@@ -2185,6 +2277,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         const issuerEmail = inv.issuerEmail || currentCompany.email;
         const issuerPhone = inv.issuerPhone || currentCompany.phone;
         const issuerAddress = inv.issuerAddress || currentCompany.address;
+        const issuerCity = inv.issuerCity || currentCompany.city;
+        const issuerState = inv.issuerState || currentCompany.state;
+        const issuerZipCode = inv.issuerZipCode || currentCompany.zipCode;
         doc.setFontSize(16);
         doc.setFont("helvetica", "bold");
         doc.text(issuerName, 20, 15);
@@ -2194,6 +2289,10 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         doc.text(issuerPhone, 20, 28);
         if (issuerAddress) {
           doc.text(issuerAddress, 20, 34);
+        }
+        if (issuerCity || issuerState || issuerZipCode) {
+          const cityStateZip = [issuerCity, issuerState, issuerZipCode].filter(Boolean).join(", ");
+          doc.text(cityStateZip, 20, 42);
         }
         doc.setFontSize(12);
         doc.text(t("pdf.invoice"), 20, 38);
@@ -2298,6 +2397,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         document.getElementById("companyEmail").value = currentCompany.email;
         document.getElementById("companyPhone").value = currentCompany.phone;
         document.getElementById("companyAddress").value = currentCompany.address;
+        document.getElementById("companyCity").value = currentCompany.city;
+        document.getElementById("companyState").value = currentCompany.state;
+        document.getElementById("companyZipCode").value = currentCompany.zipCode;
       });
       document.getElementById("closeSettingsBtn").addEventListener("click", () => {
         document.getElementById("settingsModal").hidden = true;
@@ -2308,6 +2410,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           email: document.getElementById("companyEmail").value.trim() || DEFAULT_COMPANY.email,
           phone: document.getElementById("companyPhone").value.trim() || DEFAULT_COMPANY.phone,
           address: document.getElementById("companyAddress").value.trim() || DEFAULT_COMPANY.address,
+          city: document.getElementById("companyCity").value.trim() || DEFAULT_COMPANY.city,
+          state: document.getElementById("companyState").value.trim() || DEFAULT_COMPANY.state,
+          zipCode: document.getElementById("companyZipCode").value.trim() || DEFAULT_COMPANY.zipCode,
         };
         saveCompany(currentCompany);
         updateCompanyDisplay();
@@ -2376,12 +2481,18 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         const emailEl = document.getElementById("issuerCompanyEmail");
         const phoneEl = document.getElementById("issuerCompanyPhone");
         const addressEl = document.getElementById("issuerCompanyAddress");
+        const cityEl = document.getElementById("issuerCompanyCity");
+        const stateEl = document.getElementById("issuerCompanyState");
+        const zipCodeEl = document.getElementById("issuerCompanyZipCode");
         const headerEl = document.getElementById("companyDisplayName");
 
         if (nameEl) nameEl.value = currentCompany.name || "INV-DDS-PRO";
         if (emailEl) emailEl.value = currentCompany.email || "";
         if (phoneEl) phoneEl.value = currentCompany.phone || "";
         if (addressEl) addressEl.value = currentCompany.address || "";
+        if (cityEl) cityEl.value = currentCompany.city || "";
+        if (stateEl) stateEl.value = currentCompany.state || "";
+        if (zipCodeEl) zipCodeEl.value = currentCompany.zipCode || "";
 
         if (headerEl) headerEl.textContent = currentCompany.name || "";
       }
