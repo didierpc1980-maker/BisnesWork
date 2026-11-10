@@ -2142,6 +2142,10 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         taxRate.setAttribute("aria-label", t("table.tax"));
         const remove = row.querySelector(".remove");
         remove.setAttribute("title", t("row.removeAria"));
+        remove.addEventListener("click", () => {
+          row.remove();
+          recalc();
+        });
         return row;
       }
 
