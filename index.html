@@ -203,6 +203,13 @@
         letter-spacing: -0.02em;
       }
 
+      .issuer-contact {
+        margin: 4px 0 0 0;
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
       .meta {
         display: grid;
         gap: 8px;
@@ -1048,7 +1055,8 @@
             <div class="issuer">
               <div class="logo" aria-hidden="true">IDP</div>
               <div>
-                <h1>INV-DDS-PRO</h1>
+                <h1 id="issuerCompanyName">INV-DDS-PRO</h1>
+                <p id="issuerCompanyContact" class="issuer-contact"></p>
               </div>
             </div>
 
@@ -2162,7 +2170,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           phone: document.getElementById("companyPhone").value.trim() || DEFAULT_COMPANY.phone,
         };
         saveCompany(currentCompany);
-        document.getElementById("companyDisplayName").textContent = currentCompany.name;
+        updateCompanyDisplay();
         document.getElementById("settingsModal").hidden = true;
         const toast = document.getElementById("toast");
         toast.textContent = t("company.save");
@@ -2223,11 +2231,26 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         setTimeout(() => { toast.hidden = true; }, 3000);
       }
 
+      function updateCompanyDisplay() {
+        const nameEl = document.getElementById("issuerCompanyName");
+        const contactEl = document.getElementById("issuerCompanyContact");
+        const headerEl = document.getElementById("companyDisplayName");
+
+        if (nameEl) nameEl.textContent = currentCompany.name || "INV-DDS-PRO";
+
+        const contactParts = [];
+        if (currentCompany.email) contactParts.push(currentCompany.email);
+        if (currentCompany.phone) contactParts.push(currentCompany.phone);
+        if (contactEl) contactEl.textContent = contactParts.join("  |  ");
+
+        if (headerEl) headerEl.textContent = currentCompany.name || "";
+      }
+
       function openApp() {
         document.getElementById("authScreen").hidden = true;
         document.getElementById("appShell").hidden = false;
         document.getElementById("currentUserName").textContent = currentUser ? currentUser.name : "";
-        document.getElementById("companyDisplayName").textContent = currentCompany.name;
+        updateCompanyDisplay();
         newInvoice();
       }
 
