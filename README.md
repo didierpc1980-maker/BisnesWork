@@ -10,6 +10,7 @@ Aplicación de facturación con TypeScript, Vite, Express y SQLite.
 - Líneas de factura con cantidad, precio, descuento e impuesto.
 - Cálculo automático de subtotales, descuentos, impuestos y total.
 - Guardado, listado, carga y eliminación de facturas.
+- Control de ingresos con totales por semana, mes y año (solo facturas pagadas).
 - Validación compartida con Zod en cliente y servidor.
 - Descarga de PDF vectorial con jsPDF.
 - Impresión directa y diseño responsive.
@@ -71,7 +72,7 @@ Variables de entorno opcionales:
 | Variable | Valor por defecto | Descripción |
 | --- | --- | --- |
 | `PORT` | `3001` | Puerto de la API |
-| `HOST` | `127.0.0.1` | Interfaz de escucha |
+| `HOST` | `0.0.0.0` | Interfaz de escucha |
 | `DB_PATH` | `data/inv-dds-pro.db` | Ruta del archivo SQLite |
 | `NODE_ENV` | — | Con `production`, la cookie de sesión se marca `Secure` |
 
@@ -103,6 +104,7 @@ Todas las rutas de facturas requieren sesión iniciada.
 | `GET` | `/api/invoices` | Lista las facturas del usuario |
 | `GET` | `/api/invoices/next-number` | Siguiente número disponible |
 | `GET` | `/api/invoices/:id` | Obtiene una factura completa |
+| `GET` | `/api/invoices/statistics` | Ingresos por semana, mes y año |
 | `POST` | `/api/invoices` | Crea una factura |
 | `PUT` | `/api/invoices/:id` | Actualiza una factura |
 | `DELETE` | `/api/invoices/:id` | Elimina una factura |

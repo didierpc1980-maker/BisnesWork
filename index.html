@@ -30,6 +30,10 @@
         box-sizing: border-box;
       }
 
+      [hidden] {
+        display: none !important;
+      }
+
       body {
         margin: 0;
         min-height: 100vh;
@@ -935,7 +939,7 @@
           <div class="logo" aria-hidden="true">IDP</div>
           <div>
             <h1>INV-DDS-PRO</h1>
-            <p id="authTagline">Facturación</p>
+            <p id="authTagline" data-i18n="app.tagline">Facturación</p>
           </div>
         </div>
 
@@ -946,6 +950,7 @@
             id="loginTab"
             data-mode="login"
             aria-selected="true"
+            data-i18n="auth.loginTab"
           >
             Entrar
           </button>
@@ -955,6 +960,7 @@
             id="registerTab"
             data-mode="register"
             aria-selected="false"
+            data-i18n="auth.registerTab"
           >
             Crear cuenta
           </button>
@@ -962,11 +968,11 @@
 
         <form class="auth-form" id="authForm" novalidate>
           <label id="authNameField" hidden>
-            <span>Nombre</span>
+            <span data-i18n="auth.name">Nombre</span>
             <input id="authName" autocomplete="name" maxlength="80" />
           </label>
           <label>
-            <span>Correo</span>
+            <span data-i18n="auth.email">Correo</span>
             <input
               id="authEmail"
               type="email"
@@ -976,7 +982,7 @@
             />
           </label>
           <label>
-            <span>Contraseña</span>
+            <span data-i18n="auth.password">Contraseña</span>
             <input
               id="authPassword"
               type="password"
@@ -987,12 +993,12 @@
             />
           </label>
           <p class="auth-error" id="authError" role="alert" hidden></p>
-          <button type="submit" class="btn primary auth-submit" id="authSubmit">
+          <button type="submit" class="btn primary auth-submit" id="authSubmit" data-i18n="auth.submitLogin">
             Entrar
           </button>
         </form>
 
-        <p class="auth-hint">
+        <p class="auth-hint" data-i18n="auth.hint">
           Cada cuenta solo puede ver y editar sus propias facturas.
         </p>
       </div>
@@ -1005,22 +1011,24 @@
           class="validation"
           id="validationStatus"
           data-state="checking"
+          data-i18n="validation.checking"
           role="status"
           aria-live="polite"
         >
           Comprobando…
         </div>
         <div class="actions">
-          <button type="button" class="btn" id="newInvoiceBtn">Nueva</button>
-          <button type="button" class="btn" id="invoicesBtn">Mis facturas</button>
-          <button type="button" class="btn primary" id="saveBtn">Guardar</button>
-          <button type="button" class="btn" id="addItem">+ Añadir línea</button>
-          <button type="button" class="btn" id="printBtn">Imprimir</button>
-          <button type="button" class="btn" id="downloadPdfBtn">
+          <button type="button" class="btn" id="newInvoiceBtn" data-i18n="topbar.new">Nueva</button>
+          <button type="button" class="btn" id="invoicesBtn" data-i18n="topbar.invoices">Mis facturas</button>
+          <button type="button" class="btn" id="statisticsBtn" data-i18n="topbar.statistics">Estadísticas</button>
+          <button type="button" class="btn primary" id="saveBtn" data-i18n="topbar.save">Guardar</button>
+          <button type="button" class="btn" id="addItem" data-i18n="topbar.addItem">+ Añadir línea</button>
+          <button type="button" class="btn" id="printBtn" data-i18n="topbar.print">Imprimir</button>
+          <button type="button" class="btn" id="downloadPdfBtn" data-i18n="topbar.downloadPdf">
             Descargar PDF
           </button>
-          <button type="button" class="btn ghost" id="settingsBtn">Ajustes</button>
-          <button type="button" class="btn ghost" id="logoutBtn">Salir</button>
+          <button type="button" class="btn ghost" id="settingsBtn" data-i18n="topbar.settings">Ajustes</button>
+          <button type="button" class="btn ghost" id="logoutBtn" data-i18n="topbar.logout">Salir</button>
         </div>
       </header>
 
@@ -1035,9 +1043,9 @@
             </div>
 
             <div class="meta">
-              <h2>Factura</h2>
+              <h2 data-i18n="invoice.title">Factura</h2>
               <label>
-                <span>N.º</span>
+                <span data-i18n="invoice.number">N.º</span>
                 <input
                   id="invoiceNumber"
                   placeholder="FAC-2026-0001"
@@ -1046,10 +1054,11 @@
                 />
               </label>
               <label>
-                <span>Estado</span>
+                <span data-i18n="invoice.status">Estado</span>
                 <select
                   id="status"
                   data-status="issued"
+                  data-i18n-aria-label="invoice.statusAria"
                   aria-label="Estado de la factura"
                 >
                   <option value="issued" selected>Emitida</option>
@@ -1059,11 +1068,12 @@
                 </select>
               </label>
               <label>
-                <span>Moneda</span>
+                <span data-i18n="invoice.currency">Moneda</span>
                 <input
                   id="currency"
                   value="USD"
                   maxlength="3"
+                  data-i18n-aria-label="invoice.currencyAria"
                   aria-label="Moneda ISO 4217"
                   autocomplete="off"
                 />
@@ -1073,17 +1083,21 @@
 
           <div class="parties">
             <section class="party">
-              <h3>Facturado a</h3>
+              <h3 data-i18n="invoice.billedTo">Facturado a</h3>
               <input
                 id="customerName"
                 class="customer-name"
                 placeholder="Nombre del cliente"
+                data-i18n-placeholder="invoice.customerName"
+                data-i18n-aria-label="invoice.customerName"
                 aria-label="Nombre del cliente"
                 autocomplete="organization"
               />
               <input
                 id="customerTaxId"
                 placeholder="Identificación fiscal"
+                data-i18n-placeholder="invoice.customerTaxId"
+                data-i18n-aria-label="invoice.customerTaxId"
                 aria-label="Identificación fiscal"
                 autocomplete="off"
               />
@@ -1091,25 +1105,29 @@
                 id="customerEmail"
                 type="email"
                 placeholder="Correo del cliente"
+                data-i18n-placeholder="invoice.customerEmail"
+                data-i18n-aria-label="invoice.customerEmail"
                 aria-label="Correo del cliente"
                 autocomplete="email"
               />
               <input
                 id="customerAddress"
                 placeholder="Dirección del cliente"
+                data-i18n-placeholder="invoice.customerAddress"
+                data-i18n-aria-label="invoice.customerAddress"
                 aria-label="Dirección del cliente"
                 autocomplete="street-address"
               />
             </section>
 
             <section class="dates">
-              <h3>Fechas</h3>
+              <h3 data-i18n="invoice.dates">Fechas</h3>
               <label>
-                <span>Emisión</span>
+                <span data-i18n="invoice.issueDate">Emisión</span>
                 <input id="issueDate" type="date" />
               </label>
               <label>
-                <span>Vencimiento</span>
+                <span data-i18n="invoice.dueDate">Vencimiento</span>
                 <input id="dueDate" type="date" />
               </label>
             </section>
@@ -1119,14 +1137,14 @@
             <table>
               <thead>
                 <tr>
-                  <th scope="col">Descripción</th>
-                  <th scope="col" class="num">Cantidad</th>
-                  <th scope="col" class="num">Precio unit.</th>
-                  <th scope="col" class="num">Desc. %</th>
-                  <th scope="col" class="num">Imp. %</th>
-                  <th scope="col" class="num">Total</th>
+                  <th scope="col" data-i18n="table.description">Descripción</th>
+                  <th scope="col" class="num" data-i18n="table.quantity">Cantidad</th>
+                  <th scope="col" class="num" data-i18n="table.unitPrice">Precio unit.</th>
+                  <th scope="col" class="num" data-i18n="table.discount">Desc. %</th>
+                  <th scope="col" class="num" data-i18n="table.tax">Imp. %</th>
+                  <th scope="col" class="num" data-i18n="table.total">Total</th>
                   <th scope="col" class="no-print">
-                    <span class="sr-only">Acciones</span>
+                    <span class="sr-only" data-i18n="table.actions">Acciones</span>
                   </th>
                 </tr>
               </thead>
@@ -1141,33 +1159,33 @@
 
           <div class="totals" aria-live="polite">
             <div>
-              <span>Subtotal</span>
+              <span data-i18n="totals.subtotal">Subtotal</span>
               <strong id="subtotal">—</strong>
             </div>
             <div>
-              <span>Descuentos</span>
+              <span data-i18n="totals.discounts">Descuentos</span>
               <strong id="discountTotal">—</strong>
             </div>
             <div>
-              <span>Impuestos</span>
+              <span data-i18n="totals.taxes">Impuestos</span>
               <strong id="taxTotal">—</strong>
             </div>
             <div class="grand">
-              <span>Total</span>
+              <span data-i18n="totals.total">Total</span>
               <strong id="total">—</strong>
             </div>
           </div>
 
           <section class="notes">
-            <label for="notes">Notas</label>
-            <textarea id="notes" rows="3">
+            <label for="notes" data-i18n="notes.label">Notas</label>
+            <textarea id="notes" rows="3" data-i18n="notes.default">
 Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectivo, cheque y tarjeta de crédito.</textarea>
           </section>
 
-          <section class="signature">Firma autorizada</section>
+          <section class="signature" data-i18n="signature.authorized">Firma autorizada</section>
 
           <footer class="invoice-foot">
-            <span>INV-DDS-PRO · Facturación</span>
+            <span data-i18n="app.brandFooter">INV-DDS-PRO · Facturación</span>
             <span id="footNumber">—</span>
           </footer>
         </article>
@@ -1182,13 +1200,13 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         aria-labelledby="invoicesTitle"
       >
         <header class="modal-head">
-          <h2 id="invoicesTitle">Mis facturas</h2>
-          <button type="button" class="icon-btn" id="closeInvoicesBtn" aria-label="Cerrar">
+          <h2 id="invoicesTitle" data-i18n="invoices.title">Mis facturas</h2>
+          <button type="button" class="icon-btn" id="closeInvoicesBtn" data-i18n-aria-label="common.close" aria-label="Cerrar">
             ×
           </button>
         </header>
         <div class="modal-body">
-          <p class="empty-state" id="invoicesEmpty" hidden>
+          <p class="empty-state" id="invoicesEmpty" hidden data-i18n="invoices.empty">
             No tienes facturas guardadas todavía.
           </p>
           <ul class="invoice-list" id="invoicesList"></ul>
@@ -1204,11 +1222,12 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         aria-labelledby="settingsTitle"
       >
         <header class="modal-head">
-          <h2 id="settingsTitle">Ajustes</h2>
+          <h2 id="settingsTitle" data-i18n="settings.title">Ajustes</h2>
           <button
             type="button"
             class="icon-btn"
             id="closeSettingsBtn"
+            data-i18n-aria-label="common.close"
             aria-label="Cerrar"
           >
             ×
@@ -1216,17 +1235,17 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         </header>
         <div class="modal-body settings-body">
           <fieldset class="settings-group">
-            <legend>Idioma</legend>
-            <p class="settings-hint">
+            <legend data-i18n="settings.language">Idioma</legend>
+            <p class="settings-hint" data-i18n="settings.languageHint">
               Elige el idioma de la interfaz y de los PDF.
             </p>
             <label class="settings-option">
               <input type="radio" name="language" value="es" />
-              <span>Español</span>
+              <span data-i18n="settings.spanish">Español</span>
             </label>
             <label class="settings-option">
               <input type="radio" name="language" value="en" />
-              <span>Inglés</span>
+              <span data-i18n="settings.english">Inglés</span>
             </label>
           </fieldset>
         </div>
@@ -1241,36 +1260,37 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         aria-labelledby="statisticsTitle"
       >
         <header class="modal-head">
-          <h2 id="statisticsTitle">Control de ingresos</h2>
+          <h2 id="statisticsTitle" data-i18n="statistics.title">Control de ingresos</h2>
           <button
             type="button"
             class="icon-btn"
             id="closeStatisticsBtn"
+            data-i18n-aria-label="common.close"
             aria-label="Cerrar"
           >
             ×
           </button>
         </header>
         <div class="modal-body">
-          <p class="empty-state" id="statisticsLoading">Calculando ingresos…</p>
+          <p class="empty-state" id="statisticsLoading" data-i18n="statistics.loading">Calculando ingresos…</p>
           <div class="statistics-grid" id="statisticsGrid" hidden>
             <article class="statistics-card">
-              <h3>Esta semana</h3>
+              <h3 data-i18n="statistics.week">Esta semana</h3>
               <strong id="statisticsWeekTotal">—</strong>
               <span id="statisticsWeekCount"></span>
             </article>
             <article class="statistics-card">
-              <h3>Este mes</h3>
+              <h3 data-i18n="statistics.month">Este mes</h3>
               <strong id="statisticsMonthTotal">—</strong>
               <span id="statisticsMonthCount"></span>
             </article>
             <article class="statistics-card">
-              <h3>Este año</h3>
+              <h3 data-i18n="statistics.year">Este año</h3>
               <strong id="statisticsYearTotal">—</strong>
               <span id="statisticsYearCount"></span>
             </article>
           </div>
-          <p class="statistics-note">
+          <p class="statistics-note" data-i18n="statistics.note">
             Solo se incluyen facturas marcadas como pagadas.
           </p>
         </div>
@@ -1316,24 +1336,298 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         return prefix + String(highest + 1).padStart(4, "0");
       }
 
-      function formatMoney(value, currency) {
-        const code = (currency || "USD").trim().toUpperCase() || "USD";
+      let currentLanguage = detectLanguage();
+
+      const STR = {
+        es: {
+          "app.title": "INV-DDS-PRO · Factura",
+          "app.tagline": "Facturación",
+          "app.brandFooter": "INV-DDS-PRO · Facturación",
+          "common.close": "Cerrar",
+          "auth.loginTab": "Entrar",
+          "auth.registerTab": "Crear cuenta",
+          "auth.name": "Nombre",
+          "auth.email": "Correo",
+          "auth.password": "Contraseña",
+          "auth.submitLogin": "Entrar",
+          "auth.submitRegister": "Crear cuenta",
+          "auth.hint": "Cada cuenta solo puede ver y editar sus propias facturas.",
+          "validation.checking": "Comprobando…",
+          "validation.valid": "Factura válida",
+          "status.draft": "Borrador",
+          "status.issued": "Emitida",
+          "status.partially_paid": "Pago parcial",
+          "status.paid": "Pagada",
+          "status.overdue": "Vencida",
+          "status.cancelled": "Anulada",
+          "topbar.new": "Nueva",
+          "topbar.invoices": "Mis facturas",
+          "topbar.statistics": "Estadísticas",
+          "topbar.save": "Guardar",
+          "topbar.addItem": "+ Añadir línea",
+          "topbar.print": "Imprimir",
+          "topbar.downloadPdf": "Descargar PDF",
+          "topbar.logout": "Salir",
+          "topbar.settings": "Ajustes",
+          "logout.confirm": "¿Cerrar sesión?",
+          "invoice.title": "Factura",
+          "invoice.number": "N.º",
+          "invoice.status": "Estado",
+          "invoice.currency": "Moneda",
+          "invoice.billedTo": "Facturado a",
+          "invoice.dates": "Fechas",
+          "invoice.issueDate": "Emisión",
+          "invoice.dueDate": "Vencimiento",
+          "invoice.customerName": "Nombre del cliente",
+          "invoice.customerTaxId": "Identificación fiscal",
+          "invoice.customerEmail": "Correo del cliente",
+          "invoice.customerAddress": "Dirección del cliente",
+          "table.description": "Descripción",
+          "table.quantity": "Cantidad",
+          "table.unitPrice": "Precio unit.",
+          "table.discount": "Desc. %",
+          "table.tax": "Imp. %",
+          "table.total": "Total",
+          "table.actions": "Acciones",
+          "totals.subtotal": "Subtotal",
+          "totals.discounts": "Descuentos",
+          "totals.taxes": "Impuestos",
+          "totals.total": "Total",
+          "notes.label": "Notas",
+          "notes.default": "Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectivo, cheque y tarjeta de crédito.",
+          "signature.authorized": "Firma autorizada",
+          "row.removeAria": "Eliminar línea",
+          "invoices.title": "Mis facturas",
+          "invoices.empty": "No tienes facturas guardadas todavía.",
+          "invoices.delete": "Eliminar",
+          "invoices.saved": "Factura {number} guardada.",
+          "invoices.confirmDelete": "¿Eliminar la factura {number}? Esta acción no se puede deshacer.",
+          "statistics.title": "Control de ingresos",
+          "statistics.loading": "Calculando ingresos…",
+          "statistics.week": "Esta semana",
+          "statistics.month": "Este mes",
+          "statistics.year": "Este año",
+          "statistics.paidInvoices": "{count} facturas pagadas",
+          "statistics.paidInvoice": "{count} factura pagada",
+          "statistics.note": "Solo se incluyen facturas marcadas como pagadas.",
+          "settings.title": "Ajustes",
+          "settings.language": "Idioma",
+          "settings.languageHint": "Elige el idioma de la interfaz y de los PDF.",
+          "settings.spanish": "Español",
+          "settings.english": "Inglés",
+          "pdf.invoice": "FACTURA",
+          "pdf.billedTo": "FACTURADO A",
+          "pdf.issueDate": "EMISIÓN",
+          "pdf.dueDate": "VENCIMIENTO",
+          "pdf.notes": "NOTAS",
+          "pdf.filenameFallback": "factura",
+        },
+        en: {
+          "app.title": "INV-DDS-PRO · Invoice",
+          "app.tagline": "Invoicing",
+          "app.brandFooter": "INV-DDS-PRO · Invoicing",
+          "common.close": "Close",
+          "auth.loginTab": "Sign in",
+          "auth.registerTab": "Create account",
+          "auth.name": "Name",
+          "auth.email": "Email",
+          "auth.password": "Password",
+          "auth.submitLogin": "Sign in",
+          "auth.submitRegister": "Create account",
+          "auth.hint": "Each account can only view and edit its own invoices.",
+          "validation.checking": "Checking…",
+          "validation.valid": "Invoice is valid",
+          "status.draft": "Draft",
+          "status.issued": "Issued",
+          "status.partially_paid": "Partially paid",
+          "status.paid": "Paid",
+          "status.overdue": "Overdue",
+          "status.cancelled": "Cancelled",
+          "topbar.new": "New",
+          "topbar.invoices": "My invoices",
+          "topbar.statistics": "Statistics",
+          "topbar.save": "Save",
+          "topbar.addItem": "+ Add line",
+          "topbar.print": "Print",
+          "topbar.downloadPdf": "Download PDF",
+          "topbar.logout": "Sign out",
+          "topbar.settings": "Settings",
+          "logout.confirm": "Sign out?",
+          "invoice.title": "Invoice",
+          "invoice.number": "No.",
+          "invoice.status": "Status",
+          "invoice.currency": "Currency",
+          "invoice.billedTo": "Billed to",
+          "invoice.dates": "Dates",
+          "invoice.issueDate": "Issue date",
+          "invoice.dueDate": "Due date",
+          "invoice.customerName": "Customer name",
+          "invoice.customerTaxId": "Tax ID",
+          "invoice.customerEmail": "Customer email",
+          "invoice.customerAddress": "Customer address",
+          "table.description": "Description",
+          "table.quantity": "Quantity",
+          "table.unitPrice": "Unit price",
+          "table.discount": "Disc. %",
+          "table.tax": "Tax %",
+          "table.total": "Total",
+          "table.actions": "Actions",
+          "totals.subtotal": "Subtotal",
+          "totals.discounts": "Discounts",
+          "totals.taxes": "Taxes",
+          "totals.total": "Total",
+          "notes.label": "Notes",
+          "notes.default": "Thank you for your business. Accepted payment methods: bank account, cash, check and credit card.",
+          "signature.authorized": "Authorized signature",
+          "row.removeAria": "Remove line",
+          "invoices.title": "My invoices",
+          "invoices.empty": "You don't have any saved invoices yet.",
+          "invoices.delete": "Delete",
+          "invoices.saved": "Invoice {number} saved.",
+          "invoices.confirmDelete": "Delete invoice {number}? This action cannot be undone.",
+          "statistics.title": "Income tracking",
+          "statistics.loading": "Calculating income…",
+          "statistics.week": "This week",
+          "statistics.month": "This month",
+          "statistics.year": "This year",
+          "statistics.paidInvoices": "{count} paid invoices",
+          "statistics.paidInvoice": "{count} paid invoice",
+          "statistics.note": "Only invoices marked as paid are included.",
+          "settings.title": "Settings",
+          "settings.language": "Language",
+          "settings.languageHint": "Choose the language for the interface and PDFs.",
+          "settings.spanish": "Spanish",
+          "settings.english": "English",
+          "pdf.invoice": "INVOICE",
+          "pdf.billedTo": "BILLED TO",
+          "pdf.issueDate": "ISSUE DATE",
+          "pdf.dueDate": "DUE DATE",
+          "pdf.notes": "NOTES",
+          "pdf.filenameFallback": "invoice",
+        },
+      };
+
+      const STATUS_LABELS = {
+        es: {
+          draft: "Borrador",
+          issued: "Emitida",
+          partially_paid: "Pago parcial",
+          paid: "Pagada",
+          overdue: "Vencida",
+          cancelled: "Anulada",
+        },
+        en: {
+          draft: "Draft",
+          issued: "Issued",
+          partially_paid: "Partially paid",
+          paid: "Paid",
+          overdue: "Overdue",
+          cancelled: "Cancelled",
+        },
+      };
+
+      const STATUS_KEYS = {
+        draft: "status.draft",
+        issued: "status.issued",
+        partially_paid: "status.partially_paid",
+        paid: "status.paid",
+        overdue: "status.overdue",
+        cancelled: "status.cancelled",
+      };
+
+      function detectLanguage() {
         try {
-          return new Intl.NumberFormat("es-ES", {
+          const stored = localStorage.getItem(LANGUAGE_KEY);
+          if (stored === "es" || stored === "en") return stored;
+        } catch (e) {}
+        const browserLanguage = (navigator.language || "").toLowerCase();
+        return browserLanguage.startsWith("en") ? "en" : "es";
+      }
+
+      function getLanguage() {
+        return currentLanguage;
+      }
+
+      function setLanguage(language) {
+        currentLanguage = language;
+        try {
+          localStorage.setItem(LANGUAGE_KEY, language);
+        } catch (e) {}
+        applyTranslations();
+        document.dispatchEvent(new CustomEvent("inv-dds-pro:language-changed"));
+      }
+
+      function t(key, vars) {
+        let template = STR[currentLanguage][key] || STR.es[key] || key;
+        if (!vars) return template;
+        return template.replace(/\{(\w+)\}/g, (match, name) =>
+          Object.prototype.hasOwnProperty.call(vars, name) ? String(vars[name]) : match
+        );
+      }
+
+      function statusLabel(status) {
+        const labels = STATUS_LABELS[currentLanguage] || STATUS_LABELS.es;
+        return labels[status] || status;
+      }
+
+      function applyTranslations() {
+        const lang = currentLanguage;
+        document.documentElement.lang = lang;
+        document.title = STR[lang]["app.title"];
+        const description = document.querySelector('meta[name="description"]');
+        if (description) description.setAttribute("content", t("app.description"));
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (key) el.textContent = t(key);
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+          const key = el.getAttribute("data-i18n-placeholder");
+          if (key) el.setAttribute("placeholder", t(key));
+        });
+        document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
+          const key = el.getAttribute("data-i18n-aria-label");
+          if (key) el.setAttribute("aria-label", t(key));
+        });
+        const statusSelect = document.getElementById("status");
+        if (statusSelect) {
+          for (const option of statusSelect.options) {
+            const key = STATUS_KEYS[option.value];
+            if (key) option.textContent = t(key);
+          }
+        }
+      }
+
+      function formatMoney(value, currency, lang) {
+        const code = (currency || "USD").trim().toUpperCase() || "USD";
+        const language = lang || currentLanguage;
+        try {
+          return new Intl.NumberFormat(language === "en" ? "en-US" : "es-ES", {
             style: "currency",
             currency: code,
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           }).format(value);
-        } catch {
+        } catch (e) {
           return value.toFixed(2) + " " + code;
         }
       }
 
-      function formatDate(iso) {
-        const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+      function formatQuantity(value, lang) {
+        const language = lang || currentLanguage;
+        try {
+          return new Intl.NumberFormat(language === "en" ? "en-US" : "es-ES", {
+            maximumFractionDigits: 2,
+          }).format(value);
+        } catch (e) {
+          return String(value);
+        }
+      }
+
+      function formatDate(iso, lang) {
+        const language = lang || currentLanguage;
+        const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || "");
         if (!m) return "—";
-        return m[3] + "/" + m[2] + "/" + m[1];
+        return language === "en" ? m[2] + "/" + m[3] + "/" + m[1] : m[3] + "/" + m[2] + "/" + m[1];
       }
 
       function dateInputValue(d) {
@@ -1410,12 +1704,12 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         const rows = Array.from(document.querySelectorAll("#itemsBody tr"));
         inv.items.forEach((item, i) => {
           const out = rows[i]?.querySelector(".line-total");
-          if (out) out.textContent = formatMoney(item.lineTotal, inv.currency);
+          if (out) out.textContent = formatMoney(item.lineTotal, inv.currency, currentLanguage);
         });
-        document.getElementById("subtotal").textContent = formatMoney(inv.subtotal, inv.currency);
-        document.getElementById("discountTotal").textContent = formatMoney(inv.discountTotal, inv.currency);
-        document.getElementById("taxTotal").textContent = formatMoney(inv.taxTotal, inv.currency);
-        document.getElementById("total").textContent = formatMoney(inv.total, inv.currency);
+        document.getElementById("subtotal").textContent = formatMoney(inv.subtotal, inv.currency, currentLanguage);
+        document.getElementById("discountTotal").textContent = formatMoney(inv.discountTotal, inv.currency, currentLanguage);
+        document.getElementById("taxTotal").textContent = formatMoney(inv.taxTotal, inv.currency, currentLanguage);
+        document.getElementById("total").textContent = formatMoney(inv.total, inv.currency, currentLanguage);
         document.getElementById("footNumber").textContent = inv.number || "—";
       }
 
@@ -1432,7 +1726,20 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           <td class="num"><output class="line-total">—</output></td>
           <td class="no-print"><button type="button" class="remove" title="Eliminar línea">×</button></td>
         `;
-        if (item.description) row.querySelector('[data-field="description"]').value = item.description;
+        const description = row.querySelector('[data-field="description"]');
+        description.value = item.description || "";
+        description.setAttribute("placeholder", t("table.description"));
+        description.setAttribute("aria-label", t("table.description"));
+        const quantity = row.querySelector('[data-field="quantity"]');
+        quantity.setAttribute("aria-label", t("table.quantity"));
+        const unitPrice = row.querySelector('[data-field="unitPrice"]');
+        unitPrice.setAttribute("aria-label", t("table.unitPrice"));
+        const discountRate = row.querySelector('[data-field="discountRate"]');
+        discountRate.setAttribute("aria-label", t("table.discount"));
+        const taxRate = row.querySelector('[data-field="taxRate"]');
+        taxRate.setAttribute("aria-label", t("table.tax"));
+        const remove = row.querySelector(".remove");
+        remove.setAttribute("title", t("row.removeAria"));
         return row;
       }
 
@@ -1457,8 +1764,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         document.getElementById("customerTaxId").value = "";
         document.getElementById("customerEmail").value = "";
         document.getElementById("customerAddress").value = "";
-        document.getElementById("notes").value =
-          "Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectivo, cheque y tarjeta de crédito.";
+        document.getElementById("notes").value = t("notes.default");
         document.getElementById("footNumber").textContent = "—";
         const today = new Date();
         const due = new Date(today);
@@ -1479,7 +1785,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         if (idx >= 0) list[idx] = inv;
         else list.unshift(inv);
         saveInvoices(list);
-        alert("Factura " + inv.number + " guardada.");
+        alert(t("invoices.saved", { number: inv.number }));
         renderInvoices();
       }
 
@@ -1495,10 +1801,10 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           li.innerHTML = `
             <button type="button" class="invoice-open">
               <strong>${inv.number}</strong>
-              <span>${inv.customer?.name || "Sin cliente"} · ${formatDate(inv.issueDate)}</span>
+              <span>${inv.customer?.name || "Sin cliente"} · ${formatDate(inv.issueDate, currentLanguage)}</span>
             </button>
-            <span class="invoice-badge">${inv.status}</span>
-            <span class="invoice-amount">${formatMoney(inv.total, inv.currency)}</span>
+            <span class="invoice-badge">${statusLabel(inv.status)}</span>
+            <span class="invoice-amount">${formatMoney(inv.total, inv.currency, currentLanguage)}</span>
             <button type="button" class="invoice-delete">Eliminar</button>
           `;
           li.querySelector(".invoice-open").addEventListener("click", () => {
@@ -1526,7 +1832,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
             recalc();
           });
           li.querySelector(".invoice-delete").addEventListener("click", () => {
-            if (confirm("¿Eliminar la factura " + inv.number + "?")) {
+            if (confirm(t("invoices.confirmDelete", { number: inv.number }))) {
               const updated = loadInvoices().filter((i) => i.id !== inv.id);
               saveInvoices(updated);
               renderInvoices();
@@ -1549,11 +1855,79 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         const inv = buildInvoice();
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text("INV-DDS-PRO", 20, 20);
-        doc.text("Factura " + inv.number, 20, 30);
-        doc.text("Cliente: " + inv.customer.name, 20, 40);
-        doc.text("Total: " + formatMoney(inv.total, inv.currency), 20, 50);
-        doc.save((inv.number || "factura") + ".pdf");
+        doc.setFontSize(20);
+        doc.text(t("pdf.invoice"), 20, 20);
+        doc.setFontSize(12);
+        doc.text(t("pdf.invoice") + " " + inv.number, 20, 30);
+        doc.text(t("pdf.billedTo") + ": " + inv.customer.name, 20, 40);
+        doc.text(t("pdf.issueDate") + ": " + formatDate(inv.issueDate, currentLanguage), 20, 50);
+        doc.text(t("pdf.dueDate") + ": " + formatDate(inv.dueDate, currentLanguage), 20, 60);
+        doc.text(t("totals.total") + ": " + formatMoney(inv.total, inv.currency, currentLanguage), 20, 70);
+        if (inv.notes) {
+          doc.text(t("pdf.notes") + ": " + inv.notes, 20, 80);
+        }
+        const pageCount = doc.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i += 1) {
+          doc.setPage(i);
+          doc.text(t("pdf.page", { page: i, total: pageCount }), 20, 280);
+        }
+        doc.save((inv.number || t("pdf.filenameFallback")) + ".pdf");
+      }
+
+      function renderIncomePeriod(totalEl, countEl, period) {
+        totalEl.textContent = formatMoney(period.total, document.getElementById("currency").value, currentLanguage);
+        countEl.textContent =
+          period.count === 1
+            ? t("statistics.paidInvoice", { count: period.count })
+            : t("statistics.paidInvoices", { count: period.count });
+      }
+
+      function openStatistics() {
+        const modal = document.getElementById("statisticsModal");
+        const loading = document.getElementById("statisticsLoading");
+        const grid = document.getElementById("statisticsGrid");
+        const weekTotal = document.getElementById("statisticsWeekTotal");
+        const weekCount = document.getElementById("statisticsWeekCount");
+        const monthTotal = document.getElementById("statisticsMonthTotal");
+        const monthCount = document.getElementById("statisticsMonthCount");
+        const yearTotal = document.getElementById("statisticsYearTotal");
+        const yearCount = document.getElementById("statisticsYearCount");
+
+        modal.hidden = false;
+        loading.hidden = false;
+        loading.textContent = t("statistics.loading");
+        grid.hidden = true;
+
+        const paid = loadInvoices().filter((inv) => inv.status === "paid");
+        const now = new Date();
+        const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const dayOf = (inv) => {
+          const raw = inv.issueDate || inv.createdAt || "";
+          const parsed = new Date(raw);
+          return Number.isNaN(parsed.getTime()) ? new Date(0) : parsed;
+        };
+        const inRange = (inv, from, to) => {
+          const d = dayOf(inv);
+          return d >= from && d <= to;
+        };
+        const sum = (list) => list.reduce((acc, inv) => acc + (inv.total || 0), 0);
+
+        const weekList = paid.filter((inv) => inRange(inv, startOfWeek, now));
+        const monthList = paid.filter((inv) => inRange(inv, startOfMonth, now));
+        const yearList = paid.filter((inv) => inRange(inv, startOfYear, now));
+
+        renderIncomePeriod(weekTotal, weekCount, { total: sum(weekList), count: weekList.length });
+        renderIncomePeriod(monthTotal, monthCount, { total: sum(monthList), count: monthList.length });
+        renderIncomePeriod(yearTotal, yearCount, { total: sum(yearList), count: yearList.length });
+
+        loading.hidden = true;
+        grid.hidden = false;
+      }
+
+      function closeStatistics() {
+        document.getElementById("statisticsModal").hidden = true;
       }
 
       // Event listeners
@@ -1561,20 +1935,28 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
       document.getElementById("addItemBelow").addEventListener("click", addItem);
       document.getElementById("saveBtn").addEventListener("click", saveInvoice);
       document.getElementById("newInvoiceBtn").addEventListener("click", () => {
-        if (confirm("¿Crear una factura nueva?")) newInvoice();
+        if (confirm(t("invoices.confirmNew"))) newInvoice();
       });
       document.getElementById("invoicesBtn").addEventListener("click", openInvoices);
       document.getElementById("closeInvoicesBtn").addEventListener("click", closeInvoices);
+      document.getElementById("statisticsBtn").addEventListener("click", openStatistics);
+      document.getElementById("closeStatisticsBtn").addEventListener("click", closeStatistics);
+      document.getElementById("statisticsModal").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("statisticsModal")) closeStatistics();
+      });
       document.getElementById("printBtn").addEventListener("click", () => window.print());
       document.getElementById("downloadPdfBtn").addEventListener("click", downloadPdf);
       document.getElementById("logoutBtn").addEventListener("click", () => {
-        if (confirm("¿Cerrar sesión?")) {
+        if (confirm(t("logout.confirm"))) {
           document.getElementById("authScreen").hidden = false;
           document.getElementById("appShell").hidden = true;
         }
       });
       document.getElementById("settingsBtn").addEventListener("click", () => {
         document.getElementById("settingsModal").hidden = false;
+        document.querySelectorAll('input[name="language"]').forEach((input) => {
+          input.checked = input.value === currentLanguage;
+        });
       });
       document.getElementById("closeSettingsBtn").addEventListener("click", () => {
         document.getElementById("settingsModal").hidden = true;
@@ -1590,19 +1972,41 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
 
       document.getElementById("loginTab").addEventListener("click", () => {
         document.getElementById("authNameField").hidden = true;
+        const submit = document.getElementById("authSubmit");
+        if (submit) submit.textContent = t("auth.submitLogin");
       });
       document.getElementById("registerTab").addEventListener("click", () => {
         document.getElementById("authNameField").hidden = false;
+        const submit = document.getElementById("authSubmit");
+        if (submit) submit.textContent = t("auth.submitRegister");
       });
 
-      // Language switch (basic)
+      // Language switch
       document.querySelectorAll("[data-language]").forEach((btn) => {
         btn.addEventListener("click", () => {
-          document.querySelectorAll("[data-language]").forEach((b) =>
-            b.setAttribute("aria-pressed", "false")
-          );
-          btn.setAttribute("aria-pressed", "true");
+          setLanguage(btn.getAttribute("data-language"));
+          document.querySelectorAll("[data-language]").forEach((b) => {
+            b.setAttribute(
+              "aria-pressed",
+              b.getAttribute("data-language") === currentLanguage ? "true" : "false"
+            );
+          });
         });
+      });
+
+      document.querySelectorAll('input[name="language"]').forEach((input) => {
+        input.addEventListener("change", () => {
+          if (input.checked) setLanguage(input.value);
+        });
+      });
+
+      document.addEventListener("inv-dds-pro:language-changed", () => {
+        applyTranslations();
+        const stats = document.getElementById("statisticsModal");
+        if (!stats.hidden) {
+          closeStatistics();
+          openStatistics();
+        }
       });
 
       // Input listeners
@@ -1633,7 +2037,19 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
       document.getElementById("issueDate").addEventListener("change", recalc);
       document.getElementById("dueDate").addEventListener("change", recalc);
 
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        const stats = document.getElementById("statisticsModal");
+        const settings = document.getElementById("settingsModal");
+        const invoices = document.getElementById("invoicesModal");
+        if (!stats.hidden) closeStatistics();
+        else if (!settings.hidden) document.getElementById("closeSettingsBtn").click();
+        else if (!invoices.hidden) document.getElementById("closeInvoicesBtn").click();
+      });
+
       // Init
+      currentLanguage = detectLanguage();
+      applyTranslations();
       newInvoice();
     </script>
   </body>
