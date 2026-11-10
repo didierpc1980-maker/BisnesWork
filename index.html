@@ -199,23 +199,21 @@
         box-shadow: 0 8px 20px -8px rgba(79, 70, 229, 0.7);
       }
 
-      .issuer-contact {
-        margin: 4px 0 0 0;
-        font-size: 12px;
-        color: var(--muted);
-        line-height: 1.4;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
+      .issuer > div input {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 13px;
+        padding: 4px 8px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--surface);
+        color: var(--ink);
+        min-width: 110px;
       }
 
       .issuer > div input:focus {
         outline: 2px solid var(--accent);
         border-color: var(--accent);
-      }
-
-      .issuer-contact {
-        display: none;
       }
 
       .meta {
@@ -1067,11 +1065,42 @@
             <div class="issuer">
               <div class="logo" aria-hidden="true">IDP</div>
               <div>
-                <h1 id="issuerCompanyName">DDS PRO SERVICES LLC</h1>
-                <div id="issuerCompanyContact" class="issuer-contact">
-                  <div>ddsproservices@gmail.com</div>
-                  <div>(239) 821-2003</div>
-                </div>
+                <label>
+                  <span data-i18n="company.name">Nombre de la compañía</span>
+                  <input
+                    id="issuerCompanyName"
+                    type="text"
+                    maxlength="100"
+                    autocomplete="off"
+                  />
+                </label>
+                <label>
+                  <span data-i18n="company.email">Correo de la compañía</span>
+                  <input
+                    id="issuerCompanyEmail"
+                    type="email"
+                    maxlength="200"
+                    autocomplete="off"
+                  />
+                </label>
+                <label>
+                  <span data-i18n="company.phone">Teléfono de la compañía</span>
+                  <input
+                    id="issuerCompanyPhone"
+                    type="tel"
+                    maxlength="30"
+                    autocomplete="off"
+                  />
+                </label>
+                <label>
+                  <span data-i18n="company.address">Dirección de la compañía</span>
+                  <input
+                    id="issuerCompanyAddress"
+                    type="text"
+                    maxlength="200"
+                    autocomplete="off"
+                  />
+                </label>
               </div>
             </div>
 
@@ -1323,6 +1352,15 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
                 autocomplete="off"
               />
             </label>
+            <label>
+              <span data-i18n="company.address">Dirección de la compañía</span>
+              <input
+                id="companyAddress"
+                type="text"
+                maxlength="200"
+                autocomplete="off"
+              />
+            </label>
             <button type="button" class="btn primary" id="saveCompanyBtn" data-i18n="company.save">
               Guardar datos de compañía
             </button>
@@ -1394,6 +1432,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         name: "DDS PRO SERVICES LLC",
         email: "ddsproservices@gmail.com",
         phone: "(239) 821-2003",
+        address: "",
       };
 
       function loadCompany() {
@@ -1404,6 +1443,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
               name: stored.name || DEFAULT_COMPANY.name,
               email: stored.email || DEFAULT_COMPANY.email,
               phone: stored.phone || DEFAULT_COMPANY.phone,
+              address: stored.address || DEFAULT_COMPANY.address,
             };
           }
         } catch {}
@@ -1640,6 +1680,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "company.name": "Nombre de la compañía",
           "company.email": "Correo de la compañía",
           "company.phone": "Teléfono de la compañía",
+          "company.address": "Dirección de la compañía",
           "company.settings": "Datos de la compañía",
           "company.settingsHint": "Estos datos aparecen en el encabezado de las facturas y PDF. Puedes editarlos en cualquier momento.",
           "company.save": "Guardar datos de compañía",
@@ -1736,6 +1777,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "company.name": "Company name",
           "company.email": "Company email",
           "company.phone": "Company phone",
+          "company.address": "Company address",
           "company.settings": "Company details",
           "company.settingsHint": "These details appear on invoice headers and PDFs. You can edit them at any time.",
           "company.save": "Save company details",
@@ -1917,6 +1959,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           issuerName: currentCompany.name,
           issuerEmail: currentCompany.email,
           issuerPhone: currentCompany.phone,
+          issuerAddress: currentCompany.address,
           customer: {
             name: document.getElementById("customerName").value.trim(),
             taxId: document.getElementById("customerTaxId").value.trim(),
@@ -2018,7 +2061,10 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         due.setDate(due.getDate() + 30);
         document.getElementById("issueDate").value = dateInputValue(today);
         document.getElementById("dueDate").value = dateInputValue(due);
-        updateCompanyDisplay();
+        document.getElementById("issuerCompanyName").value = currentCompany.name;
+        document.getElementById("issuerCompanyEmail").value = currentCompany.email;
+        document.getElementById("issuerCompanyPhone").value = currentCompany.phone;
+        document.getElementById("issuerCompanyAddress").value = currentCompany.address;
         document.getElementById("itemsBody").replaceChildren();
         const row = createRow();
         document.getElementById("itemsBody").append(row);
@@ -2065,6 +2111,10 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
             document.getElementById("customerEmail").value = inv.customer?.email || "";
             document.getElementById("customerPhone").value = inv.customer?.phone || "";
             document.getElementById("customerAddress").value = inv.customer?.address || "";
+            document.getElementById("issuerCompanyName").value = inv.issuerName || currentCompany.name;
+            document.getElementById("issuerCompanyEmail").value = inv.issuerEmail || currentCompany.email;
+            document.getElementById("issuerCompanyPhone").value = inv.issuerPhone || currentCompany.phone;
+            document.getElementById("issuerCompanyAddress").value = inv.issuerAddress || currentCompany.address;
             document.getElementById("issueDate").value = inv.issueDate ? inv.issueDate.slice(0, 10) : "";
             document.getElementById("dueDate").value = inv.dueDate ? inv.dueDate.slice(0, 10) : "";
             document.getElementById("notes").value = inv.notes || "";
@@ -2107,6 +2157,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         const issuerName = inv.issuerName || currentCompany.name;
         const issuerEmail = inv.issuerEmail || currentCompany.email;
         const issuerPhone = inv.issuerPhone || currentCompany.phone;
+        const issuerAddress = inv.issuerAddress || currentCompany.address;
         doc.setFontSize(16);
         doc.setFont("helvetica", "bold");
         doc.text(issuerName, 20, 15);
@@ -2114,6 +2165,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         doc.setFont("helvetica", "normal");
         doc.text(issuerEmail, 20, 22);
         doc.text(issuerPhone, 20, 28);
+        if (issuerAddress) {
+          doc.text(issuerAddress, 20, 34);
+        }
         doc.setFontSize(12);
         doc.text(t("pdf.invoice"), 20, 38);
         doc.text(t("pdf.invoice") + " " + inv.number, 20, 48);
@@ -2216,6 +2270,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         document.getElementById("companyName").value = currentCompany.name;
         document.getElementById("companyEmail").value = currentCompany.email;
         document.getElementById("companyPhone").value = currentCompany.phone;
+        document.getElementById("companyAddress").value = currentCompany.address;
       });
       document.getElementById("closeSettingsBtn").addEventListener("click", () => {
         document.getElementById("settingsModal").hidden = true;
@@ -2225,6 +2280,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           name: document.getElementById("companyName").value.trim() || DEFAULT_COMPANY.name,
           email: document.getElementById("companyEmail").value.trim() || DEFAULT_COMPANY.email,
           phone: document.getElementById("companyPhone").value.trim() || DEFAULT_COMPANY.phone,
+          address: document.getElementById("companyAddress").value.trim() || DEFAULT_COMPANY.address,
         };
         saveCompany(currentCompany);
         updateCompanyDisplay();
@@ -2290,24 +2346,15 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
 
       function updateCompanyDisplay() {
         const nameEl = document.getElementById("issuerCompanyName");
-        const contactEl = document.getElementById("issuerCompanyContact");
+        const emailEl = document.getElementById("issuerCompanyEmail");
+        const phoneEl = document.getElementById("issuerCompanyPhone");
+        const addressEl = document.getElementById("issuerCompanyAddress");
         const headerEl = document.getElementById("companyDisplayName");
 
-        if (nameEl) nameEl.textContent = currentCompany.name || "INV-DDS-PRO";
-
-        if (contactEl) {
-          contactEl.innerHTML = "";
-          if (currentCompany.email) {
-            const emailLine = document.createElement("div");
-            emailLine.textContent = currentCompany.email;
-            contactEl.appendChild(emailLine);
-          }
-          if (currentCompany.phone) {
-            const phoneLine = document.createElement("div");
-            phoneLine.textContent = currentCompany.phone;
-            contactEl.appendChild(phoneLine);
-          }
-        }
+        if (nameEl) nameEl.value = currentCompany.name || "INV-DDS-PRO";
+        if (emailEl) emailEl.value = currentCompany.email || "";
+        if (phoneEl) phoneEl.value = currentCompany.phone || "";
+        if (addressEl) addressEl.value = currentCompany.address || "";
 
         if (headerEl) headerEl.textContent = currentCompany.name || "";
       }
