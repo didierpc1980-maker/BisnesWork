@@ -201,8 +201,11 @@
 
       .issuer > div {
         display: flex;
-        flex-direction: column;
-        gap: 6px;
+        flex-direction: row;
+        gap: 12px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        min-width: 0;
       }
 
       .issuer > div label {
@@ -210,23 +213,28 @@
         flex-direction: column;
         gap: 3px;
         margin: 0;
+        min-width: 0;
+        flex: 1;
       }
 
       .issuer > div span {
-        font-size: 11px;
+        font-size: 10px;
         color: var(--muted);
-        font-weight: 600;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
       }
 
       .issuer > div input {
         width: 100%;
         box-sizing: border-box;
-        font-size: 14px;
+        font-size: 13px;
         padding: 4px 8px;
         border: 1px solid var(--line);
         border-radius: 6px;
         background: var(--surface);
         color: var(--ink);
+        min-width: 110px;
       }
 
       .issuer > div input:focus {
