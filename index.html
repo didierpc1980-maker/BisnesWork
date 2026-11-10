@@ -1067,8 +1067,11 @@
             <div class="issuer">
               <div class="logo" aria-hidden="true">IDP</div>
               <div>
-                <h1 id="issuerCompanyName">INV-DDS-PRO</h1>
-                <div id="issuerCompanyContact" class="issuer-contact"></div>
+                <h1 id="issuerCompanyName">DDS PRO SERVICES LLC</h1>
+                <div id="issuerCompanyContact" class="issuer-contact">
+                  <div>ddsproservices@gmail.com</div>
+                  <div>(239) 821-2003</div>
+                </div>
               </div>
             </div>
 
@@ -1396,7 +1399,13 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
       function loadCompany() {
         try {
           const stored = JSON.parse(localStorage.getItem(COMPANY_KEY) || "null");
-          if (stored && stored.name) return stored;
+          if (stored) {
+            return {
+              name: stored.name || DEFAULT_COMPANY.name,
+              email: stored.email || DEFAULT_COMPANY.email,
+              phone: stored.phone || DEFAULT_COMPANY.phone,
+            };
+          }
         } catch {}
         return { ...DEFAULT_COMPANY };
       }
@@ -2424,6 +2433,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
       // Siempre mostrar pantalla de acceso, aunque haya sesión guardada
       document.getElementById("authScreen").hidden = false;
       document.getElementById("appShell").hidden = true;
+
+      // Mostrar datos de la compañía en el encabezado de la factura
+      updateCompanyDisplay();
 
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
