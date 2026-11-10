@@ -1467,6 +1467,23 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         localStorage.setItem(USERS_KEY, JSON.stringify(list));
       }
 
+      function normalizeUsers() {
+        try {
+          const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+          let changed = false;
+          for (const u of users) {
+            const lower = u.email.toLowerCase();
+            if (u.email !== lower) {
+              u.email = lower;
+              changed = true;
+            }
+          }
+          if (changed) {
+            saveUsers(users);
+          }
+        } catch {}
+      }
+
       function loadSession() {
         try {
           return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
@@ -2427,6 +2444,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
       // Init
       currentLanguage = detectLanguage();
       applyTranslations();
+
+      // Normalizar emails existentes a minúsculas (compatibilidad con cuentas viejas)
+      normalizeUsers();
 
       // Siempre mostrar pantalla de acceso, aunque haya sesión guardada
       document.getElementById("authScreen").hidden = false;
