@@ -2009,6 +2009,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         due.setDate(due.getDate() + 30);
         document.getElementById("issueDate").value = dateInputValue(today);
         document.getElementById("dueDate").value = dateInputValue(due);
+        updateCompanyDisplay();
         document.getElementById("itemsBody").replaceChildren();
         const row = createRow();
         document.getElementById("itemsBody").append(row);
