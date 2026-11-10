@@ -1974,11 +1974,15 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         document.getElementById("authNameField").hidden = true;
         const submit = document.getElementById("authSubmit");
         if (submit) submit.textContent = t("auth.submitLogin");
+        document.getElementById("loginTab").setAttribute("aria-selected", "true");
+        document.getElementById("registerTab").setAttribute("aria-selected", "false");
       });
       document.getElementById("registerTab").addEventListener("click", () => {
         document.getElementById("authNameField").hidden = false;
         const submit = document.getElementById("authSubmit");
         if (submit) submit.textContent = t("auth.submitRegister");
+        document.getElementById("registerTab").setAttribute("aria-selected", "true");
+        document.getElementById("loginTab").setAttribute("aria-selected", "false");
       });
 
       // Language switch
