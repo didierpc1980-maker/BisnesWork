@@ -62,6 +62,7 @@ La aplicación completa se sirve en `http://127.0.0.1:3001`.
 | `npm start` | Sirve la API y el build de producción |
 | `npm run preview` | Sirve solo el build estático (sin API) |
 | `npm run typecheck` | Comprueba los tipos con `tsc` |
+| `npm run dist` | Genera el instalador de escritorio (Electron + electron-builder) |
 
 ## Base de datos
 
@@ -75,6 +76,16 @@ Variables de entorno opcionales:
 | `HOST` | `0.0.0.0` | Interfaz de escucha |
 | `DB_PATH` | `data/inv-dds-pro.db` | Ruta del archivo SQLite |
 | `NODE_ENV` | — | Con `production`, la cookie de sesión se marca `Secure` |
+
+## Escritorio (Electron)
+
+La app también se puede empaquetar como aplicación de escritorio con Electron + electron-builder (NSIS en Windows):
+
+```bash
+npm run dist
+```
+
+El instalador se genera en `release/INV-DDS-PRO Setup 0.1.0.exe`.
 
 ## Estructura
 
