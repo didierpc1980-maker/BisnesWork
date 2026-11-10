@@ -17,17 +17,27 @@ function createWindow() {
     },
   });
 
+  win.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+    console.error(`[electron] did-fail-load: ${errorDescription} (${errorCode}) url=${validatedURL} mainFrame=${isMainFrame}`);
+  });
+
+  win.webContents.on("did-finish-load", () => {
+    console.log("[electron] did-finish-load ok");
+  });
+
+  win.webContents.on("console-message", (_event, _level, _message) => {
+    // noop
+  });
+
+  win.webContents.on("render-process-gone", (_event, details) => {
+    console.error(`[electron] render-process-gone: ${JSON.stringify(details)}`);
+  });
+
   if (isDev) {
     win.loadURL("http://127.0.0.1:3001");
   } else {
-    win.loadFile(
-      path.join(process.resourcesPath, "app.asar", "dist", "index.html"),
-    );
+    win.loadFile(path.join(process.resourcesPath, "app.asar", "dist", "index.html"));
   }
-
-  win.webContents.on("did-finish-load", () => {
-    // noop
-  });
 
   return win;
 }
