@@ -2428,16 +2428,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
       currentLanguage = detectLanguage();
       applyTranslations();
 
-      const session = loadSession();
-      if (session) {
-        const user = loadUsers().find((u) => u.id === session.userId);
-        if (user) {
-          currentUser = user;
-          openApp();
-        } else {
-          clearSession();
-        }
-      }
+      // Siempre mostrar pantalla de acceso, aunque haya sesión guardada
+      document.getElementById("authScreen").hidden = false;
+      document.getElementById("appShell").hidden = true;
 
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
