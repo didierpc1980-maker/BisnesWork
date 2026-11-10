@@ -1043,6 +1043,10 @@
           </button>
         </form>
 
+        <button type="button" class="btn ghost" id="clearDataBtn" data-i18n="auth.clearData" style="margin-top: 10px; font-size: 11px;">
+          Limpiar todos los datos
+        </button>
+
         <p class="auth-hint" data-i18n="auth.hint">
           Cada cuenta solo puede ver y editar sus propias facturas.
         </p>
@@ -1503,6 +1507,14 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         localStorage.removeItem(SESSION_KEY);
       }
 
+      function clearAllData() {
+        localStorage.removeItem(USERS_KEY);
+        localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(COMPANY_KEY);
+        localStorage.removeItem(LANGUAGE_KEY);
+      }
+
       function getCurrentUserId() {
         const session = loadSession();
         return session ? session.userId : null;
@@ -1595,6 +1607,8 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "auth.busyLogin": "Entrando…",
           "auth.busyRegister": "Creando cuenta…",
           "auth.welcome": "Bienvenido, {name}.",
+          "auth.clearData": "Limpiar todos los datos",
+          "auth.clearDataConfirm": "¿Eliminar todos los datos? Se borrarán usuarios, sesiones y facturas.",
           "validation.checking": "Comprobando…",
           "validation.valid": "Factura válida",
           "status.draft": "Borrador",
@@ -1689,6 +1703,8 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "auth.busyLogin": "Signing in…",
           "auth.busyRegister": "Creating account…",
           "auth.welcome": "Welcome, {name}.",
+          "auth.clearData": "Clear all data",
+          "auth.clearDataConfirm": "Delete all data? Users, sessions and invoices will be deleted.",
           "validation.checking": "Checking…",
           "validation.valid": "Invoice is valid",
           "status.draft": "Draft",
@@ -2359,6 +2375,13 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
       }
 
       document.getElementById("authForm").addEventListener("submit", handleAuthSubmit);
+
+      document.getElementById("clearDataBtn").addEventListener("click", () => {
+        if (confirm("¿Eliminar todos los datos? Se borrarán usuarios, sesiones y facturas.")) {
+          clearAllData();
+          location.reload();
+        }
+      });
 
       document.getElementById("loginTab").addEventListener("click", () => {
         document.getElementById("authNameField").hidden = true;
