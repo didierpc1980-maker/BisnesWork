@@ -1121,6 +1121,15 @@
                 autocomplete="email"
               />
               <input
+                id="customerPhone"
+                type="tel"
+                placeholder="Teléfono del cliente"
+                data-i18n-placeholder="invoice.customerPhone"
+                data-i18n-aria-label="invoice.customerPhone"
+                aria-label="Teléfono del cliente"
+                autocomplete="tel"
+              />
+              <input
                 id="customerAddress"
                 placeholder="Dirección del cliente"
                 data-i18n-placeholder="invoice.customerAddress"
@@ -1481,6 +1490,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "invoice.customerName": "Nombre del cliente",
           "invoice.customerTaxId": "Identificación fiscal",
           "invoice.customerEmail": "Correo del cliente",
+          "invoice.customerPhone": "Teléfono del cliente",
           "invoice.customerAddress": "Dirección del cliente",
           "table.description": "Descripción",
           "table.quantity": "Cantidad",
@@ -1568,6 +1578,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
           "invoice.customerName": "Customer name",
           "invoice.customerTaxId": "Tax ID",
           "invoice.customerEmail": "Customer email",
+          "invoice.customerPhone": "Customer phone",
           "invoice.customerAddress": "Customer address",
           "table.description": "Description",
           "table.quantity": "Quantity",
@@ -1781,6 +1792,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
             name: document.getElementById("customerName").value.trim(),
             taxId: document.getElementById("customerTaxId").value.trim(),
             email: document.getElementById("customerEmail").value.trim(),
+            phone: document.getElementById("customerPhone").value.trim(),
             address: document.getElementById("customerAddress").value.trim(),
           },
           issueDate: document.getElementById("issueDate").value
@@ -1868,6 +1880,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         document.getElementById("customerName").value = "";
         document.getElementById("customerTaxId").value = "";
         document.getElementById("customerEmail").value = "";
+        document.getElementById("customerPhone").value = "";
         document.getElementById("customerAddress").value = "";
         document.getElementById("notes").value = t("notes.default");
         document.getElementById("footNumber").textContent = "—";
@@ -1920,6 +1933,7 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
             document.getElementById("customerName").value = inv.customer?.name || "";
             document.getElementById("customerTaxId").value = inv.customer?.taxId || "";
             document.getElementById("customerEmail").value = inv.customer?.email || "";
+            document.getElementById("customerPhone").value = inv.customer?.phone || "";
             document.getElementById("customerAddress").value = inv.customer?.address || "";
             document.getElementById("issueDate").value = inv.issueDate ? inv.issueDate.slice(0, 10) : "";
             document.getElementById("dueDate").value = inv.dueDate ? inv.dueDate.slice(0, 10) : "";
@@ -1965,6 +1979,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         doc.setFontSize(12);
         doc.text(t("pdf.invoice") + " " + inv.number, 20, 30);
         doc.text(t("pdf.billedTo") + ": " + inv.customer.name, 20, 40);
+        if (inv.customer.phone) {
+          doc.text(t("invoice.customerPhone") + ": " + inv.customer.phone, 20, 48);
+        }
         doc.text(t("pdf.issueDate") + ": " + formatDate(inv.issueDate, currentLanguage), 20, 50);
         doc.text(t("pdf.dueDate") + ": " + formatDate(inv.dueDate, currentLanguage), 20, 60);
         doc.text(t("totals.total") + ": " + formatMoney(inv.total, inv.currency, currentLanguage), 20, 70);
