@@ -1061,12 +1061,18 @@
           </button>
         </form>
 
-        <button type="button" class="btn ghost" id="clearDataBtn" data-i18n="auth.clearData" style="margin-top: 10px; font-size: 11px;">
+        <button type="button" class="btn" id="clearDataBtn" data-i18n="auth.clearData" style="margin-top: 8px; font-size: 11px; padding: 6px 12px;">
           Limpiar todos los datos
         </button>
 
         <p class="auth-hint" data-i18n="auth.hint">
           Cada cuenta solo puede ver y editar sus propias facturas.
+        </p>
+
+        <p class="auth-reset" style="margin-top: 8px;">
+          <a href="#" id="forgotPasswordBtn" style="color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 11px;">
+            ¿Olvidaste tu contraseña? Limpiar y crear cuenta nueva
+          </a>
         </p>
       </div>
     </section>
@@ -2457,6 +2463,8 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
             showWelcomeToast(user.name);
             openApp();
           } else {
+            // Normalizar emails antes de intentar hacer login (compatibilidad con cuentas viejas)
+            normalizeUsers();
             const user = await loginUser(email, password);
             currentUser = user;
             saveSession(user);
@@ -2466,6 +2474,9 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
         } catch (err) {
           errorEl.textContent = err.message;
           errorEl.hidden = false;
+          if (isRegister === false) {
+            errorEl.textContent += " Si olvidaste tu contraseña, usa el enlace de abajo o el botón \"Limpiar todos los datos\" para crear una cuenta nueva.";
+          }
         } finally {
           submit.disabled = false;
           submit.textContent = isRegister ? t("auth.submitRegister") : t("auth.submitLogin");
@@ -2526,6 +2537,14 @@ Gracias por su preferencia. Métodos de pago aceptados: cuenta bancaria, efectiv
 
       document.getElementById("clearDataBtn").addEventListener("click", () => {
         if (confirm("¿Eliminar todos los datos? Se borrarán usuarios, sesiones y facturas.")) {
+          clearAllData();
+          location.reload();
+        }
+      });
+
+      document.getElementById("forgotPasswordBtn").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (confirm("¿Borrar todos los datos y crear una cuenta nueva? Se eliminarán usuarios, sesiones y facturas.")) {
           clearAllData();
           location.reload();
         }
